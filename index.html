@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Checklist interactive d'audit financier par FSA, assertions et contrôles ICS pour les établissements suisses soumis à la FINMA.">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Checklist Audit FINMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<style>
+/* Layout : poste de travail d'audit — liste des FSA à gauche, dossier de travail à droite ; accent « tickmark » rouge d'auditeur */
+:root{
+  --bg:#f5f6f4; --surface:#ffffff; --surface-2:#eef0ed; --line:#d9ddd7;
+  --fg:#1c2421; --muted:#5d6a64; --ink:#1f4a40; --ink-soft:#e2ece8;
+  --tick:#b4322a; --tick-soft:#f7e3e1;
+  --hi:#a3341f; --mid:#8a5f0e; --lo:#2f6b4b; --na:#6b7470;
+  --hi-bg:#f8e4df; --mid-bg:#f6ecd6; --lo-bg:#e1efe6; --na-bg:#e9ebea;
+  --f-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --f-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121715; --surface:#1a211e; --surface-2:#222b27; --line:#33403a;
+  --fg:#e3e9e5; --muted:#9aa8a1; --ink:#8fc7b5; --ink-soft:#1f3530;
+  --tick:#ec7a6f; --tick-soft:#3a2321;
+  --hi:#f0927f; --mid:#e2b866; --lo:#86c9a0; --na:#9aa29e;
+  --hi-bg:#3a241f; --mid-bg:#352c19; --lo-bg:#1d3326; --na-bg:#272d2a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121715; --surface:#1a211e; --surface-2:#222b27; --line:#33403a;
+  --fg:#e3e9e5; --muted:#9aa8a1; --ink:#8fc7b5; --ink-soft:#1f3530;
+  --tick:#ec7a6f; --tick-soft:#3a2321;
+  --hi:#f0927f; --mid:#e2b866; --lo:#86c9a0; --na:#9aa29e;
+  --hi-bg:#3a241f; --mid-bg:#352c19; --lo-bg:#1d3326; --na-bg:#272d2a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:20px;padding-block:20px 48px}
+h1,h2,h3,h4{text-wrap:balance;margin:0}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.75rem;letter-spacing:-.01em}
+h2{font-family:var(--f-display);font-weight:600;font-size:1.5rem}
+h3{font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--tick);outline-offset:2px}
+.muted{color:var(--muted)}
+
+header.top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--fg);padding-bottom:14px}
+.sub{color:var(--muted);font-size:.9rem;max-width:62ch;margin:4px 0 0}
+.seg{display:flex;gap:3px;background:var(--surface-2);padding:3px;border-radius:var(--r)}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:.85rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12);font-weight:600}
+
+nav.tabs{display:flex;gap:2px;margin-top:16px;overflow-x:auto;border-bottom:1px solid var(--line)}
+nav.tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:.92rem;display:inline-flex;gap:6px;align-items:center}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--tick);font-weight:600}
+.badge{font-family:var(--f-mono);font-size:.7rem;background:var(--hi);color:var(--surface);border-radius:999px;padding:0 6px;min-width:18px;text-align:center;font-variant-numeric:tabular-nums}
+.badge[data-n="0"]{display:none}
+
+.grid{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;margin-top:20px}
+aside.list{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-right:4px}
+.grp{margin-bottom:14px}
+.grp h3{margin:0 0 6px 8px}
+.fsa-btn{display:grid;grid-template-columns:10px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:7px 8px;border-radius:4px;cursor:pointer;font-size:.9rem}
+.fsa-btn:hover{background:var(--surface-2)}
+.fsa-btn[aria-current="true"]{background:var(--ink-soft);color:var(--ink);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%}
+.dot.hi{background:var(--hi)} .dot.mid{background:var(--mid)} .dot.lo{background:var(--lo)}
+.fsa-btn .pct{font-family:var(--f-mono);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:6px;align-items:center}
+.fsa-btn .pct.done{color:var(--lo)}
+.fsa-btn .ano{color:var(--hi);font-weight:600}
+.mob-pick{display:none}
+
+.panel{min-width:0}
+.fsa-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-start;justify-content:space-between}
+.en{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;padding:3px 9px;border-radius:999px;letter-spacing:.02em;white-space:nowrap}
+.pill.hi{background:var(--hi-bg);color:var(--hi)} .pill.mid{background:var(--mid-bg);color:var(--mid)} .pill.lo{background:var(--lo-bg);color:var(--lo)}
+
+.stats{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 4px;font-size:.84rem;align-items:center}
+.stats span{display:inline-flex;gap:6px;align-items:center}
+.stats b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.bar{display:flex;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%}
+.bar .b-done{background:var(--lo)} .bar .b-ano{background:var(--hi)} .bar .b-na{background:var(--na)}
+
+/* En bref */
+.brief{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-top:16px}
+.brief>div{padding:14px 16px;min-width:0}
+.brief>div+div{border-left:1px solid var(--line)}
+.obj{font-family:var(--f-display);font-size:1.08rem;line-height:1.4;margin:6px 0 12px}
+ol.prio{margin:6px 0 0;padding:0;list-style:none;counter-reset:p}
+ol.prio li{counter-increment:p;display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin:7px 0;font-size:.9rem}
+ol.prio li::before{content:counter(p);font-family:var(--f-mono);font-size:.75rem;width:20px;height:20px;border-radius:50%;background:var(--tick);color:var(--surface);display:grid;place-items:center;margin-top:1px}
+ul.pbc{margin:6px 0 0;padding:0;list-style:none}
+ul.pbc li{font-size:.86rem;padding:5px 0;border-top:1px dashed var(--line);display:flex;gap:8px}
+ul.pbc li:first-child{border-top:0}
+ul.pbc li::before{content:"▢";color:var(--muted)}
+
+/* Red flags */
+.flags{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-top:10px}
+.flag{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--mid);border-radius:var(--r);padding:0}
+.flag.s3{border-left-color:var(--hi)}
+.flag summary{list-style:none;cursor:pointer;padding:11px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;font-size:.9rem;font-weight:500}
+.flag summary::-webkit-details-marker{display:none}
+.flag summary .as{margin:0}
+.flag .body{padding:0 14px 12px;font-size:.85rem}
+.flag .body p{margin:4px 0}
+.flag .lab{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;display:block;margin-top:8px}
+
+.sec-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:26px}
+.afilter{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);padding:3px 9px;border-radius:999px;cursor:pointer;font-size:.78rem;display:inline-flex;gap:5px;align-items:center}
+.chip b{font-family:var(--f-mono);font-weight:500}
+.chip.key{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.as{display:inline-flex;gap:3px;flex-wrap:wrap}
+.as b{font-family:var(--f-mono);font-size:.66rem;font-weight:500;background:var(--ink-soft);color:var(--ink);padding:1px 5px;border-radius:3px}
+
+/* Procédures */
+.procs{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.proc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.proc.off{opacity:.35}
+.proc[data-s="done"]{border-color:color-mix(in srgb,var(--lo) 45%,var(--line))}
+.proc[data-s="ano"]{border-color:var(--hi);box-shadow:inset 3px 0 0 var(--hi)}
+.proc[data-s="na"] .ptitle{color:var(--muted);text-decoration:line-through}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;align-items:center;padding:10px 12px 10px 14px}
+.ptoggle{all:unset;cursor:pointer;display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;align-items:start;min-width:0}
+.ptoggle:focus-visible{outline:2px solid var(--tick);outline-offset:3px;border-radius:3px}
+.chev{font-size:.75rem;color:var(--muted);transition:transform .15s;margin-top:3px}
+.proc.open .chev{transform:rotate(90deg)}
+.ptitle{font-size:.93rem}
+.ptitle .as{margin-left:6px;vertical-align:1px}
+.status{display:flex;gap:2px;background:var(--surface-2);padding:2px;border-radius:5px}
+.status button{border:0;background:transparent;padding:4px 8px;font-size:.74rem;border-radius:4px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.status button[aria-pressed="true"][data-v="todo"]{background:var(--surface);color:var(--fg);font-weight:600}
+.status button[aria-pressed="true"][data-v="done"]{background:var(--lo);color:var(--surface);font-weight:600}
+.status button[aria-pressed="true"][data-v="ano"]{background:var(--hi);color:var(--surface);font-weight:600}
+.status button[aria-pressed="true"][data-v="na"]{background:var(--na);color:var(--surface);font-weight:600}
+.pdet{border-top:1px solid var(--line);padding:12px 14px 14px 38px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px 22px;font-size:.87rem}
+.pdet ol{margin:4px 0 0;padding-left:18px}
+.pdet ol li{margin:3px 0}
+.trap{background:var(--mid-bg);border-radius:var(--r);padding:9px 12px}
+.trap .lab,.ifano .lab,.pdet .lab{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;display:block;color:var(--muted)}
+.trap .lab{color:var(--mid)}
+.ifano{margin-top:10px;background:var(--hi-bg);border-radius:var(--r);padding:9px 12px}
+.ifano .lab{color:var(--hi)}
+.anoform{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:8px;background:var(--surface-2);padding:10px;border-radius:var(--r)}
+.anoform label{font-size:.72rem;color:var(--muted);display:block;margin-bottom:3px}
+.anoform input{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+section.block{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-top:12px}
+section.block>header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line)}
+.ctl{padding:10px 16px;border-top:1px solid var(--line);font-size:.88rem}
+.ctl:first-of-type{border-top:0}
+.ctl small{display:block;color:var(--muted);font-size:.8rem;margin-top:3px}
+.ctl small.def{color:var(--hi)}
+ul.plain{margin:0;padding:10px 16px 12px 32px;font-size:.88rem}
+ul.plain li{margin:5px 0}
+.ref{font-family:var(--f-mono);font-size:.78rem;color:var(--ink)}
+textarea{width:100%;min-height:80px;border:0;padding:12px 16px;background:transparent;resize:vertical;border-radius:0 0 var(--r) var(--r);display:block}
+.ghost{border:1px solid var(--line);background:var(--surface);padding:5px 10px;border-radius:4px;cursor:pointer;font-size:.8rem}
+.ghost:hover{border-color:var(--fg)}
+.toast{font-size:.8rem;color:var(--lo)}
+.kind{font-family:var(--f-mono);font-size:.66rem;padding:1px 5px;border-radius:3px;background:var(--surface-2);color:var(--muted);margin-right:6px}
+
+/* Matrice */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-top:16px}
+table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:760px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+th{font-weight:600;font-size:.74rem;color:var(--muted);background:var(--surface-2)}
+td:first-child,th:first-child{text-align:left}
+td.k{color:var(--tick);font-size:1.05rem} td.r{color:var(--muted)}
+td.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+tr.rowlink{cursor:pointer} tr.rowlink:hover td{background:var(--surface-2)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.8rem;color:var(--muted);margin-top:10px}
+.defs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:20px}
+.def{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.def h4{font-size:.92rem;margin-bottom:4px}
+.def p{margin:0;font-size:.85rem;color:var(--muted)}
+.def .code{font-family:var(--f-mono);color:var(--tick);margin-right:6px}
+
+.steps{counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;padding:10px 16px;border-top:1px solid var(--line);font-size:.88rem}
+.steps li:first-child{border-top:0}
+.steps li::before{content:counter(s);font-family:var(--f-mono);color:var(--tick);font-weight:500}
+.cycles{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);font-size:.9rem}
+.note{margin-top:28px;padding:12px 16px;border-left:3px solid var(--mid);background:var(--mid-bg);font-size:.85rem;max-width:80ch;border-radius:0 var(--r) var(--r) 0}
+.lead{max-width:74ch;color:var(--muted);margin:16px 0 0;font-size:.92rem}
+.danger{color:var(--hi)}
+
+/* Suivi du mandat */
+.eng-top{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end;margin-top:20px}
+.field label{display:block;font-size:.72rem;color:var(--muted);margin-bottom:3px}
+.field input{padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface);width:100%}
+.field.name{flex:1 1 260px;max-width:420px} .field.year{width:110px}
+.eng-actions{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:16px}
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;cursor:pointer;text-align:left;display:block;width:100%}
+.phase[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.phase .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.phase .big{font-family:var(--f-mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+.phase .sm{font-size:.78rem;color:var(--muted);margin-top:6px}
+.bar .b-wip{background:var(--ink)} .bar .b-rev{background:var(--mid)}
+.milestone{margin-top:14px;padding:10px 14px;border-radius:var(--r);background:var(--tick-soft);font-size:.88rem;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.milestone b{color:var(--tick)}
+.efilter{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px}
+table.eng{min-width:780px}
+table.eng th,table.eng td{text-align:left;vertical-align:middle}
+table.eng td.atl{font-family:var(--f-mono);font-size:.76rem;color:var(--muted);white-space:nowrap;width:90px}
+table.eng td.who{width:62px;text-align:center}
+table.eng th.who{text-align:center}
+tr.grp td{background:var(--surface-2);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+tr.so td{background:var(--tick-soft)}
+tr[data-s="done"] .etitle{color:var(--muted)}
+.mspill{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tick);border:1px solid var(--tick);border-radius:3px;padding:0 5px;margin-left:6px;white-space:nowrap}
+select.est{padding:4px 6px;border-radius:4px;border:1px solid var(--line);background:var(--surface);font-size:.8rem;cursor:pointer}
+select.est[data-s="wip"]{border-color:var(--ink);color:var(--ink);font-weight:600}
+select.est[data-s="rev"]{border-color:var(--mid);color:var(--mid);background:var(--mid-bg);font-weight:600}
+select.est[data-s="done"]{border-color:var(--lo);color:var(--lo);background:var(--lo-bg);font-weight:600}
+input.ini{width:48px;padding:4px 4px;border:1px solid var(--line);border-radius:4px;background:var(--surface);text-align:center;font-family:var(--f-mono);font-size:.78rem;text-transform:uppercase}
+.lnk{border:0;background:none;color:var(--ink);font-size:.78rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;padding:0;margin-left:8px;white-space:nowrap}
+.lnk .danger{text-decoration:none}
+table.eng td.cmt{min-width:240px}
+.hint{display:block;font-size:.76rem;color:var(--mid);margin-bottom:4px;line-height:1.35}
+input.cin{width:100%;padding:4px 7px;border:1px solid transparent;border-radius:4px;background:transparent;font-size:.82rem}
+input.cin:hover{border-color:var(--line)}
+input.cin:focus{border-color:var(--ink);background:var(--surface)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.ghost.danger{border-color:var(--hi)}
+/* Documents PBC */
+.pgrp>header h4{font-size:.98rem;font-weight:600}
+.pgrp .cnt{font-family:var(--f-mono);font-size:.76rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.pgrp .cnt.ok{color:var(--lo);font-weight:600}
+.pdoc{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;align-items:center;padding:9px 16px;border-top:1px solid var(--line)}
+.pgrp>header+.pdoc{border-top:0}
+.ptxt{font-size:.9rem}
+.ptxt small{display:block;color:var(--muted);font-size:.78rem;margin-top:1px}
+.pdoc[data-s="rec"] .ptxt{color:var(--muted)}
+.pdoc[data-s="na"] .ptxt{color:var(--muted);text-decoration:line-through}
+.pstatus{display:flex;gap:2px;background:var(--surface-2);padding:2px;border-radius:5px}
+.pstatus button{border:0;background:transparent;padding:4px 8px;font-size:.74rem;border-radius:4px;cursor:pointer;color:var(--muted);white-space:nowrap}
+.pstatus button[aria-pressed="true"][data-v="todo"]{background:var(--surface);color:var(--fg);font-weight:600}
+.pstatus button[aria-pressed="true"][data-v="req"]{background:var(--ink);color:var(--surface);font-weight:600}
+.pstatus button[aria-pressed="true"][data-v="rec"]{background:var(--lo);color:var(--surface);font-weight:600}
+.pstatus button[aria-pressed="true"][data-v="na"]{background:var(--na);color:var(--surface);font-weight:600}
+ul.pbc li.rec{color:var(--muted)}
+ul.pbc li.rec::before{content:"✓";color:var(--lo)}
+ul.pbc li.req::before{content:"◔";color:var(--ink)}
+@media (max-width:560px){.pdoc{grid-template-columns:minmax(0,1fr)}.pstatus{justify-self:start}}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  aside.list{display:none}
+  .mob-pick{display:block;margin-top:16px}
+  .mob-pick select{width:100%;padding:10px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+  .two,.brief,.pdet{grid-template-columns:minmax(0,1fr)}
+  .brief>div+div{border-left:0;border-top:1px solid var(--line)}
+}
+@media (max-width:560px){
+  .wrap{padding-inline:16px} h1{font-size:1.4rem}
+  .prow{grid-template-columns:minmax(0,1fr)}
+  .status{justify-self:start;margin-left:24px}
+  .pdet{padding-left:14px}
+  .anoform{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Checklist Audit FINMA</h1>
+      <p class="sub">Pour chaque FSA : ce qu'il faut faire en priorité, comment le faire, ce qui peut mal tourner et quoi faire si tu trouves une anomalie. Banques privées et gestionnaires de fortune, OEPC-FINMA / Circ. 2020/1.</p>
+    </div>
+    <div class="seg" role="group" aria-label="Type d'entité">
+      <button id="ent-B" aria-pressed="true" data-ent="B">Banque privée</button>
+      <button id="ent-G" aria-pressed="false" data-ent="G">Gestionnaire de fortune</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="eng" id="tab-eng">Suivi du mandat</button>
+    <button role="tab" aria-selected="false" data-tab="pbc" id="tab-pbc">Documents PBC</button>
+    <button role="tab" aria-selected="false" data-tab="fsa" id="tab-fsa">Checklist FSA</button>
+    <button role="tab" aria-selected="false" data-tab="ano" id="tab-ano">Anomalies <span class="badge" id="ano-badge" data-n="0">0</span></button>
+    <button role="tab" aria-selected="false" data-tab="mat" id="tab-mat">Matrice des assertions</button>
+    <button role="tab" aria-selected="false" data-tab="sci" id="tab-sci">ICS / SCI</button>
+    <button role="tab" aria-selected="false" data-tab="ref" id="tab-ref">Références</button>
+  </nav>
+
+  <div id="view-eng"></div>
+  <div id="view-pbc" hidden></div>
+  <div id="view-fsa" hidden>
+    <div class="mob-pick"><select id="fsa-select" aria-label="Choisir une FSA"></select></div>
+    <div class="grid">
+      <aside class="list" id="fsa-list" aria-label="Liste des FSA"></aside>
+      <div class="panel" id="fsa-panel"></div>
+    </div>
+  </div>
+  <div id="view-ano" hidden></div>
+  <div id="view-mat" hidden></div>
+  <div id="view-sci" hidden></div>
+  <div id="view-ref" hidden></div>
+
+  <p class="note"><b>À valider sur le mandat.</b> Base de travail générique : elle ne remplace ni la méthodologie Forvis Mazars, ni le programme d'audit prudentiel FINMA de l'exercice. Vérifie la version en vigueur des textes cités, plusieurs ont été refondus avec Bâle III final au 1.1.2025. Tes statuts et notes restent dans ce navigateur.</p>
+</div>
+
+<script>
+const A={
+ E:["Existence / Survenance","L'actif ou le passif existe à la clôture ; la transaction a réellement eu lieu."],
+ C:["Exhaustivité","Tout ce qui devait être comptabilisé l'est (risque typique des passifs et des produits non facturés)."],
+ R:["Droits & obligations","L'entité détient l'actif (pas un avoir client en dépôt) ; le passif est bien le sien."],
+ V:["Évaluation","Montants correctement évalués : corrections de valeur, juste valeur, dépréciation."],
+ X:["Exactitude","Montants et données correctement calculés et saisis."],
+ T:["Séparation des exercices","Opérations rattachées à la bonne période (cut-off)."],
+ K:["Classification","Bonne rubrique du schéma FINMA (couvert / non couvert, négoce vs immobilisations financières…)."],
+ P:["Présentation & annexe","Annexe et présentation conformes à l'OEPC-FINMA / Circ. 2020/1."]
+};
+const AK=Object.keys(A);
+
+/* p: {a, t, how[], trap, if}  flags: {t, a, s(2|3), why, do} */
+const FSA=[
+{id:"liq",g:"Actif",n:"Liquidités",en:"Cash and cash equivalents",ent:"BG",risk:"lo",
+ obj:"Prouver que tous les comptes bancaires et la caisse existent à la clôture, que la liste est complète et que chaque solde correspond exactement à la comptabilité.",
+ prio:["Obtenir les relevés bancaires au 31.12 de tous les comptes et envoyer les confirmations bancaires","Faire le rapprochement banque / comptabilité compte par compte","Rapprocher l'extrait de caisse (PV d'inventaire) de la comptabilité"],
+ pbc:["Liste de tous les comptes bancaires (banque, IBAN, devise), y compris ceux ouverts ou fermés pendant l'exercice","Relevés bancaires au 31.12 de chaque compte","Rapprochements bancaires au 31.12 (banque vs comptabilité), signés","Extrait de caisse / PV d'inventaire de caisse au 31.12, signé","Relevé du compte de virement BNS (banques)","Liste des suspens de rapprochement et justificatifs de dénouement post-clôture","Liste des signataires autorisés et des accès e-banking par compte"],
+ flags:[
+  {t:"Compte bancaire absent de la liste du client",a:"C",s:3,why:"Compte hors comptabilité : fonds non enregistrés ou risque de fraude.",do:"Comparer avec les réponses de confirmation (qui listent tous les comptes ouverts), les relevés et les droits de signature. Escalade immédiate."},
+  {t:"Confirmation bancaire non reçue ou différente du relevé",a:"ER",s:3,why:"Preuve externe manquante ou contradictoire sur le solde.",do:"Relancer la banque, puis procédures alternatives (relevé original, MT940 / MT950). Documenter l'écart."},
+  {t:"Suspens anciens non apurés dans le rapprochement",a:"EC",s:2,why:"Peut masquer des paiements non comptabilisés ou une erreur de saisie.",do:"Demander la justification et le dénouement post-clôture de chaque suspens significatif."},
+  {t:"Écart de caisse ou PV de caisse non signé",a:"EX",s:2,why:"Risque de détournement ou absence de contrôle.",do:"Recompter si significatif, vérifier la comptabilisation de l'écart et le contrôle d'accès."},
+  {t:"Fonds bloqués ou nantis non mentionnés",a:"RP",s:2,why:"Liquidité non disponible : information obligatoire en annexe.",do:"Lire les sections garanties et nantissements des confirmations, corriger l'annexe."}],
+ p:[
+  {a:"EC",t:"Collecter les relevés bancaires au 31.12 de tous les comptes",how:["Obtenir la liste exhaustive des comptes (banque, IBAN, devise)","Recouper avec le grand livre : chaque compte bancaire du GL a un relevé, et inversement","Inclure les comptes soldés ou fermés pendant l'exercice"],trap:"Se limiter aux comptes présents dans la balance : un compte non comptabilisé passe inaperçu.",if:"Compte manquant → escalade au senior / manager, évaluer le risque de fraude."},
+  {a:"ER",t:"Envoyer et suivre les confirmations bancaires (NA-CH 505)",how:["Envoyer les demandes toi-même, avec l'autorisation signée du client","Demander soldes, liste des comptes, garanties, nantissements, signataires","Rapprocher chaque réponse du relevé et du GL"],trap:"Ne lire que le solde et ignorer les autres sections (garanties, nantissements, dérivés, comptes non listés).",if:"Écart → obtenir l'explication et le justificatif, quantifier l'anomalie."},
+  {a:"EX",t:"Rapprochement banque / comptabilité compte par compte",how:["Solde du relevé vs solde du GL au 31.12, au centime, dans la devise du compte","Revoir le rapprochement du client : suspens, ancienneté, signature 4 yeux","Tester le dénouement post-clôture des suspens significatifs","Vérifier la conversion des comptes en devises au cours de clôture"],trap:"Accepter le rapprochement du client sans recalcul ni contrôle des suspens.",if:"Écart non expliqué ou suspens > 90 jours → anomalie potentielle, demander l'écriture corrective."},
+  {a:"EX",t:"Rapprocher l'extrait de caisse de la comptabilité",how:["PV d'inventaire de caisse au 31.12 signé par deux personnes","Comparer au solde du compte caisse du GL","Recompter si le numéraire est significatif"],trap:"Numéraire en devises non revalorisé au cours de clôture.",if:"Écart de caisse → vérifier la comptabilisation de la différence et le contrôle d'accès."},
+  {a:"RP",t:"Fonds bloqués, nantis et présentation",how:["Identifier dans les confirmations les montants bloqués ou nantis","Vérifier l'annexe et la classification (à vue / à terme)"],trap:"Dépôts à terme de plus de 3 mois classés en liquidités.",if:"Reclassement ou correction d'annexe."}],
+ ics:[{c:"Rapprochements bancaires mensuels revus par une 2e personne",test:"Échantillon de mois, preuve et date de revue",def:"Revue absente ou très tardive"},{c:"Gestion des signataires et des accès e-banking",test:"Signataires vs organigramme et départs",def:"Signataire parti de l'entreprise toujours actif"},{c:"Caisse : double clé et inventaire périodique",test:"PV d'inventaire",def:"Pas d'inventaire ou une seule personne"}],
+ ref:["NA-CH 505 (confirmations externes)","OEPC-FINMA, schéma bilan","Circ. FINMA 2020/1","OLiq"],ra:["Ratio de liquidité à court terme (LCR) – banques"]},
+{id:"bk",g:"Actif",n:"Créances sur les banques",en:"Amounts due from banks",ent:"BG",risk:"mid",
+ obj:"Confirmer l'existence des avoirs nostro et placements interbancaires, et la qualité des contreparties.",
+ prio:["Envoyer les confirmations bancaires (ISA 505) tôt","Analyser les suspens nostro > 30 jours","Contrôler la notation des contreparties et les corrections de valeur"],
+ pbc:["Liste des comptes nostro et soldes au 31.12","Rapprochements nostro à la clôture","Liste des limites de contreparties bancaires","Calcul des corrections de valeur pour risques de défaillance"],
+ flags:[
+  {t:"Confirmation non reçue ou différente",a:"ER",s:3,why:"Preuve externe manquante sur un actif significatif.",do:"Relancer, puis procédures alternatives (relevés post-clôture, SWIFT MT950). Documenter l'écart."},
+  {t:"Compte nostro absent de la liste du client",a:"C",s:3,why:"Compte hors comptabilité : risque de fraude ou de fonds non enregistrés.",do:"Comparer avec les droits de signature et les réponses de confirmation ; escalade immédiate."},
+  {t:"Contrepartie dégradée sans correction de valeur",a:"V",s:2,why:"Sous-évaluation du risque de défaillance.",do:"Revoir le modèle de corrections de valeur et la notation retenue."}],
+ p:[
+  {a:"ER",t:"Confirmations bancaires sur échantillon de nostros",how:["Sélectionner y compris comptes soldés pendant l'exercice","Envoyer sous contrôle de l'auditeur","Rapprocher chaque réponse du GL"],trap:"Oublier les garanties, nantissements et produits dérivés mentionnés dans la réponse.",if:"Écart → obtenir le rapprochement détaillé, tester les éléments, évaluer anomalie."},
+  {a:"EC",t:"Revue des rapprochements nostro à la clôture",how:["Lister les suspens par ancienneté et montant","Tester le dénouement post-clôture","Vérifier la revue 4 yeux"],trap:"Suspens « techniques » récurrents jamais investigués.",if:"Suspens non dénoué → anomalie potentielle et point SCI."},
+  {a:"V",t:"Corrections de valeur sur créances interbancaires",how:["Obtenir la notation de chaque contrepartie significative","Vérifier le calcul des corrections pour risques inhérents / pertes attendues"],trap:"Notation ancienne non mise à jour.",if:"Correction insuffisante → calculer l'écart et le reporter."},
+  {a:"KP",t:"Échéances et risque pays dans l'annexe",how:["Rapprocher la ventilation par échéance résiduelle du système","Contrôler l'allocation par pays"],trap:"Placements à terme classés « à vue ».",if:"Erreur de présentation → correction d'annexe."}],
+ ics:[{c:"Rapprochement nostro automatisé avec escalade des suspens",test:"Revue des rapports d'escalade sur échantillon",def:"Seuils d'escalade jamais déclenchés ou ignorés"},{c:"Limites de contrepartie bancaire approuvées et suivies",test:"Inspection des dépassements et de leur approbation",def:"Dépassements sans approbation"}],
+ ref:["Circ. FINMA 2020/1","OEPC-FINMA art. 25 (corrections de valeur)","OFR (répartition des risques)"],ra:["Gros risques interbancaires"]},
+
+{id:"lom",g:"Actif",n:"Créances sur la clientèle (Lombard)",en:"Amounts due from customers",ent:"B",risk:"hi",
+ obj:"Démontrer que les crédits Lombard existent, sont suffisamment couverts par les portefeuilles nantis et que les pertes probables sont provisionnées.",
+ prio:["Obtenir la liste des positions sous-couvertes à la clôture et leur suivi","Recalculer les valeurs d'avance sur un échantillon","Tester les créances compromises et leurs corrections de valeur"],
+ pbc:["Balance des crédits au 31.12 rapprochée du GL","Politique de crédit et grille des taux d'avance","Liste des dépassements / appels de marge et leur statut","Liste des créances compromises et calcul des corrections de valeur","Liste des dérogations (overrides) de valeurs d'avance"],
+ flags:[
+  {t:"Positions sous-couvertes depuis longtemps",a:"V",s:3,why:"Indice de créance compromise non reconnue : la couverture ne suffit plus à rembourser.",do:"Demander l'analyse de la direction, la valeur de réalisation des sûretés et tester la nécessité d'une correction de valeur individuelle."},
+  {t:"Concentration sur un titre ou un émetteur dans le portefeuille nanti",a:"V",s:3,why:"La valeur d'avance standard surestime la couverture en cas de chute du titre.",do:"Vérifier l'application d'une décote de concentration conforme à la politique."},
+  {t:"Overrides fréquents des valeurs d'avance",a:"V",s:2,why:"Contournement de la politique de crédit, souvent pour des clients importants.",do:"Tester l'approbation de chaque override sur la population complète."},
+  {t:"Découverts non autorisés sur comptes courants",a:"K",s:2,why:"Crédit de fait non approuvé et souvent sans couverture.",do:"Reclasser en créances, vérifier couverture et approbation a posteriori."},
+  {t:"Crédit à un organe ou une partie liée à conditions préférentielles",a:"P",s:2,why:"Information obligatoire en annexe et point sensible de l'audit prudentiel.",do:"Comparer aux conditions de marché, vérifier l'annexe et l'approbation."}],
+ p:[
+  {a:"E",t:"Confirmations clients ou procédures alternatives",how:["Échantillon stratifié (gros montants + aléatoire)","Alternative : remboursements post-clôture, relevés signés"],trap:"Adresse de confirmation modifiée récemment (risque de fraude).",if:"Contestation du client → investigation immédiate, escalade au manager."},
+  {a:"V",t:"Recalcul des valeurs d'avance sur échantillon",how:["Pour chaque crédit : lister les titres nantis à la clôture","Appliquer le taux d'avance de la politique par type de titre","Appliquer décotes devise, concentration, liquidité","Comparer couverture recalculée vs engagement"],trap:"Utiliser les taux du système sans vérifier qu'ils correspondent à la politique approuvée.",if:"Insuffisance de couverture → vérifier appel de marge et besoin de correction de valeur."},
+  {a:"V",t:"Suivi des positions sous-couvertes et appels de marge",how:["Liste à la clôture et 3 mois avant","Délai de régularisation vs politique","Approbation des tolérances"],trap:"Positions « réglées » par un simple relèvement de limite.",if:"Position non régularisée → candidat créance compromise."},
+  {a:"V",t:"Créances compromises et corrections de valeur individuelles",how:["Critères : retard > 90 jours, insolvabilité, restructuration","Valeur de liquidation des sûretés","Recalcul de la correction de valeur"],trap:"Valeur des sûretés basée sur un cours non actualisé ou un titre illiquide.",if:"Correction sous-estimée → quantifier l'écart."},
+  {a:"V",t:"Corrections pour risques de défaillance inhérents / pertes attendues",how:["Comprendre la méthode et la catégorie FINMA de la banque","Tester paramètres et données d'entrée","Contrôler la variation passée en résultat"],trap:"Utilisation de la réserve sans justification pour lisser le résultat.",if:"Écart de méthode → discussion avec le manager, documenter le jugement."},
+  {a:"R",t:"Contrats de crédit et actes de nantissement",how:["Contrat signé, acte de nantissement, périmètre des dépôts nantis"],trap:"Nantissement couvrant un dépôt différent de celui utilisé dans le calcul.",if:"Sûreté non opposable → la créance est non couverte."},
+  {a:"KP",t:"Tableau des couvertures et annexe",how:["Rapprocher couvert / non couvert du système","Contrôler créances compromises et variation des corrections de valeur"],trap:"Classer comme « couvert » un crédit dont la couverture est insuffisante.",if:"Reclassement d'annexe."}],
+ ics:[{c:"Calcul quotidien des couvertures avec alertes",test:"Échantillon de jours, suivi des alertes jusqu'à régularisation",def:"Alertes clôturées sans action ni approbation"},{c:"Octroi selon le règlement de compétences",test:"Signataires vs limites sur dossiers",def:"Crédits approuvés au-delà de la compétence"},{c:"Approbation des overrides de valeurs d'avance",test:"Population complète des overrides vs approbations",def:"Overrides saisis par le front sans validation risques"}],
+ ref:["OEPC-FINMA art. 25 ss","Circ. FINMA 2020/1 (créances compromises, couvertures)","Circ. FINMA 2017/1 (gouvernance)","OFR"],ra:["Champ « risque de crédit »","Engagements envers les organes et parties liées"]},
+
+{id:"hyp",g:"Actif",n:"Créances hypothécaires",en:"Mortgage loans",ent:"B",risk:"hi",
+ obj:"Vérifier que chaque prêt est garanti par un gage correctement estimé et respecte les exigences minimales (LTV, tenue, amortissement).",
+ prio:["Tester l'estimation du gage et le LTV sur échantillon","Revoir la liste des exceptions à la politique (ETP)","Vérifier la détention des cédules hypothécaires"],
+ pbc:["Balance des prêts hypothécaires","Politique d'octroi et méthode d'estimation","Liste des ETP","Inventaire des cédules hypothécaires"],
+ flags:[
+  {t:"Estimation faite par le conseiller qui vend le crédit",a:"V",s:3,why:"Absence d'indépendance : risque de surévaluation du gage.",do:"Vérifier la séparation des fonctions, retester l'estimation."},
+  {t:"Nombreuses ETP sans approbation",a:"V",s:2,why:"Non-respect de l'autorégulation reconnue par la FINMA.",do:"Tester la population des ETP, signaler au prudentiel."},
+  {t:"Cédule introuvable ou de rang inférieur",a:"R",s:3,why:"Sûreté non opposable.",do:"Reclasser en non couvert, évaluer la correction de valeur."}],
+ p:[
+  {a:"R",t:"Contrôle des cédules hypothécaires",how:["Rapprocher l'inventaire des titres de la balance des prêts","Vérifier le rang et le montant"],trap:"Cédules de registre non vérifiées dans le registre foncier.",if:"Sûreté manquante → créance non couverte."},
+  {a:"V",t:"Estimation du gage et calcul LTV / tenue",how:["Méthode, date et indépendance de l'estimation","Recalcul LTV et tenue avec taux théorique"],trap:"Estimation ancienne sur un marché en baisse.",if:"LTV > politique → vérifier ETP et approbation."},
+  {a:"V",t:"Respect des directives ASB (fonds propres, amortissement)",how:["Échantillon de nouvelles affaires","Part de fonds propres durs et plan d'amortissement"],trap:"Fonds propres provenant d'un prêt du 2e pilier non identifié.",if:"Non-conformité → point d'audit prudentiel."},
+  {a:"V",t:"Positions compromises et corrections de valeur",how:["Arriérés d'intérêts, défauts de paiement","Valeur de liquidation du gage"],trap:"Arriérés capitalisés dans le prêt.",if:"Correction de valeur à constituer."}],
+ ics:[{c:"Estimation indépendante de la vente",test:"Walkthrough et échantillon",def:"Estimation par le front"},{c:"Contrôle automatique LTV / tenue à l'octroi",test:"Test du paramétrage + ITGC",def:"Paramètres modifiables sans contrôle"}],
+ ref:["Directives ASB (financements hypothécaires)","Circ. FINMA 2020/1","OFR"],ra:["Respect de l'autorégulation reconnue"]},
+
+{id:"trd",g:"Actif",n:"Négoce et dérivés (VRP / VRN)",en:"Trading portfolio & replacement values",ent:"B",risk:"mid",
+ obj:"S'assurer que les positions et dérivés existent, sont complets et valorisés à la juste valeur.",
+ prio:["Rapprocher les positions avec dépositaires et contreparties","Vérifier les prix de façon indépendante (IPV)","Contrôler le netting des VRP / VRN"],
+ pbc:["Inventaire des positions et dérivés au 31.12","Rapport IPV de la fonction risques","Accords de compensation (ISDA / CSA)"],
+ flags:[
+  {t:"Prix provenant du trader lui-même",a:"V",s:3,why:"Risque de manipulation de la valorisation.",do:"Obtenir des prix indépendants et recalculer."},
+  {t:"Netting sans accord de compensation valable",a:"P",s:2,why:"Présentation nette non conforme.",do:"Présenter brut, corriger l'annexe."},
+  {t:"Instruments de niveau 3 significatifs",a:"V",s:2,why:"Jugement élevé dans les modèles.",do:"Faire intervenir un spécialiste valorisation."}],
+ p:[
+  {a:"EC",t:"Rapprochement positions / dépositaire / confirmations OTC",how:["Confirmations des dérivés OTC","Rapprocher l'inventaire des relevés de dépositaire"],trap:"Opérations non confirmées en fin d'année.",if:"Écart → identifier l'opération manquante."},
+  {a:"V",t:"Vérification indépendante des prix",how:["Sources de marché (Bloomberg, Reuters)","Recalcul d'un échantillon de forwards / options"],trap:"Cours de clôture d'une mauvaise date ou place.",if:"Écart de valorisation → quantifier et reporter."},
+  {a:"P",t:"Compensation et annexe des dérivés",how:["Vérifier les accords de netting","Contrôler l'annexe (volumes contractuels, VRP / VRN)"],trap:"Compensation entre contreparties différentes.",if:"Correction de présentation."}],
+ ics:[{c:"Séparation front / back office",test:"Revue des droits d'accès",def:"Trader avec accès aux paramètres de prix"},{c:"Contrôle de prix indépendant",test:"Inspection des rapports IPV mensuels",def:"Écarts IPV non corrigés"}],
+ ref:["OEPC-FINMA (juste valeur)","Circ. FINMA 2020/1","LIMF"],ra:["Obligations LIMF : déclaration, réduction des risques"]},
+
+{id:"fin",g:"Actif",n:"Immobilisations financières",en:"Financial investments",ent:"BG",risk:"mid",
+ obj:"Confirmer l'existence des titres de placement et leur évaluation selon leur catégorie (coût amorti ou valeur la plus basse).",
+ prio:["Confirmer auprès du dépositaire","Tester la méthode d'évaluation par catégorie","Vérifier la documentation de l'intention de conservation"],
+ pbc:["Inventaire des titres au 31.12","Relevés des dépositaires","Politique ALM / d'investissement"],
+ flags:[
+  {t:"Ventes de titres « conservés jusqu'à l'échéance »",a:"K",s:2,why:"Remet en cause la classification et l'évaluation au coût amorti.",do:"Vérifier le traitement des gains / pertes et la cohérence de la catégorie."},
+  {t:"Émetteur dégradé sans dépréciation",a:"V",s:3,why:"Perte de valeur non reconnue.",do:"Revoir le test de dépréciation de la direction."}],
+ p:[
+  {a:"ER",t:"Confirmation dépositaire et rapprochement",how:["Confirmation directe","Rapprocher quantités et ISIN"],trap:"Titres prêtés ou nantis non identifiés.",if:"Écart de quantité → investigation."},
+  {a:"V",t:"Évaluation selon la catégorie",how:["Coût amorti pour titres conservés jusqu'à l'échéance","Valeur la plus basse pour les autres"],trap:"Mélange des méthodes dans le système.",if:"Recalcul et quantification de l'écart."},
+  {a:"P",t:"Annexe : ventilation, notations, titres nantis",how:["Rapprocher la ventilation de l'inventaire"],trap:"Titres nantis non mentionnés.",if:"Correction d'annexe."}],
+ ics:[{c:"Décisions d'investissement selon la stratégie ALM",test:"PV du comité ALM",def:"Investissements hors stratégie"}],
+ ref:["OEPC-FINMA","Circ. FINMA 2020/1"],ra:["Risques de taux (IRRBB)"]},
+
+{id:"par",g:"Actif",n:"Participations",en:"Participations",ent:"BG",risk:"lo",
+ obj:"Vérifier la détention des participations et l'absence de dépréciation non comptabilisée.",
+ prio:["Obtenir la preuve de détention","Comparer valeur comptable et quote-part de fonds propres","Contrôler l'annexe"],
+ pbc:["Registre des actions / contrats","Comptes des filiales"],
+ flags:[{t:"Filiale en pertes durables",a:"V",s:2,why:"Indice de dépréciation.",do:"Obtenir le test de dépréciation de la direction et le challenger."}],
+ p:[
+  {a:"R",t:"Preuve de détention",how:["Registre des actions, contrats"],trap:"Détention via fiduciaire non documentée.",if:"Demander justificatif."},
+  {a:"V",t:"Test de dépréciation",how:["Valeur comptable vs quote-part de fonds propres ou valeur d'usage"],trap:"Business plan trop optimiste.",if:"Dépréciation à comptabiliser."}],
+ ics:[{c:"Revue annuelle des valeurs par la direction financière",test:"Inspection",def:"Aucune revue documentée"}],
+ ref:["OEPC-FINMA","CO art. 960 ss"],ra:[]},
+
+{id:"reg",g:"Actif",n:"Comptes de régularisation",en:"Accrued income & expenses",ent:"BG",risk:"mid",
+ obj:"Vérifier que les produits et charges sont rattachés au bon exercice et correctement calculés.",
+ prio:["Recalculer les commissions de gestion courues","Contrôler les bonus provisionnés","Rechercher les passifs non enregistrés"],
+ pbc:["Détail des comptes de régularisation","Calcul des commissions courues","Décision du comité de rémunération"],
+ flags:[
+  {t:"Commission de performance comptabilisée avant cristallisation",a:"T",s:3,why:"Produit non acquis : surévaluation du résultat.",do:"Vérifier les conditions contractuelles et extourner si nécessaire."},
+  {t:"Bonus non provisionné alors que versé en début d'année suivante",a:"C",s:2,why:"Charge de l'exercice omise.",do:"Rapprocher des paiements de janvier / février."}],
+ p:[
+  {a:"XT",t:"Recalcul des commissions de gestion courues",how:["AuM × tarif × prorata temporis"],trap:"AuM d'une mauvaise date.",if:"Quantifier l'écart."},
+  {a:"ET",t:"Commissions de performance",how:["High-water mark, hurdle","Date de cristallisation"],trap:"Performance latente comptabilisée.",if:"Extourne."},
+  {a:"C",t:"Recherche de passifs non enregistrés",how:["Factures et paiements post-clôture","Tester les montants > seuil"],trap:"Factures envoyées directement aux métiers.",if:"Charge à comptabiliser."}],
+ ics:[{c:"Calcul automatisé et revue mensuelle des courus",test:"Échantillon de mois",def:"Pas de revue"}],
+ ref:["OEPC-FINMA","CO art. 958b"],ra:[]},
+
+{id:"dep",g:"Passif",n:"Dépôts de la clientèle",en:"Amounts due in respect of customer deposits",ent:"B",risk:"mid",
+ obj:"S'assurer que tous les dépôts clients sont enregistrés, correctement classés et que les obligations réglementaires associées sont respectées.",
+ prio:["Rapprocher la balance clients du GL","Tester l'exhaustivité (confirmations, comptes internes)","Contrôler avoirs en déshérence et dépôts privilégiés"],
+ pbc:["Balance des comptes clients","Liste des comptes de suspens / internes","Liste des avoirs sans contact","Calcul des dépôts privilégiés (esisuisse)"],
+ flags:[
+  {t:"Comptes de suspens non apurés",a:"C",s:3,why:"Peuvent cacher des fonds clients mal comptabilisés.",do:"Justifier chaque élément significatif."},
+  {t:"Soldes débiteurs compensés avec des créditeurs",a:"K",s:2,why:"Compensation interdite.",do:"Présenter brut."},
+  {t:"Avoirs sans contact non déclarés",a:"P",s:2,why:"Non-respect des directives ASB.",do:"Point d'audit prudentiel."}],
+ p:[
+  {a:"CE",t:"Confirmations clients",how:["Positives sur gros soldes, négatives sur échantillon","Inclure comptes à solde nul"],trap:"Courrier en banque restante non confirmable.",if:"Contestation → escalade, risque de fraude."},
+  {a:"C",t:"Rapprochement balance / GL et comptes internes",how:["Rapprochement total","Revue des comptes internes et suspens"],trap:"Comptes techniques utilisés comme tampons.",if:"Anomalie potentielle."},
+  {a:"P",t:"Avoirs en déshérence et dépôts privilégiés",how:["Liste ASB","Calcul esisuisse et couverture"],trap:"Critères de « sans contact » trop larges.",if:"Point prudentiel."}],
+ ics:[{c:"Ouverture de compte avec KYC préalable",test:"Échantillon OBA-FINMA",def:"Dossier KYC incomplet"},{c:"Modification des données de base en 4 yeux",test:"Log des changements",def:"Changement d'adresse sans contrôle"}],
+ ref:["Circ. FINMA 2020/1","LB art. 37a ss","Directives ASB avoirs sans contact"],ra:["Garantie des dépôts","LBA / OBA-FINMA"]},
+
+{id:"prov",g:"Passif",n:"Provisions",en:"Provisions",ent:"BG",risk:"hi",
+ obj:"Identifier tous les litiges et risques et vérifier qu'ils sont provisionnés ou mentionnés correctement.",
+ prio:["Envoyer les lettres d'avocats","Lire les PV du CA, de la direction et la correspondance FINMA","Challenger les estimations de la direction"],
+ pbc:["Registre des litiges","Lettres d'avocats","PV du CA et comités","Correspondance FINMA et autorités étrangères"],
+ flags:[
+  {t:"Litige mentionné dans un PV mais absent du registre",a:"C",s:3,why:"Passif potentiel non provisionné.",do:"Interroger le juridique, obtenir l'évaluation."},
+  {t:"Enquête d'une autorité étrangère (cross-border)",a:"C",s:3,why:"Risque d'amende significative.",do:"Évaluer avec le manager, envisager un spécialiste."},
+  {t:"Dissolution de provision sans justification",a:"V",s:2,why:"Lissage du résultat.",do:"Demander la justification documentée."}],
+ p:[
+  {a:"C",t:"Lettres d'avocats et revue des PV",how:["Envoyer à tous les avocats actifs","Lire tous les PV de l'exercice et post-clôture"],trap:"Avocats étrangers oubliés.",if:"Litige non provisionné → évaluation."},
+  {a:"V",t:"Évaluation des hypothèses",how:["Probabilité, montant, événements postérieurs"],trap:"Accepter l'estimation sans preuve.",if:"Écart d'estimation à documenter."},
+  {a:"P",t:"Tableau de variation des provisions",how:["Constitution, utilisation, dissolution"],trap:"Utilisation pour un autre but.",if:"Correction de l'annexe."}],
+ ics:[{c:"Registre des litiges revu trimestriellement",test:"Inspection",def:"Registre non à jour"}],
+ ref:["OEPC-FINMA","Circ. FINMA 2020/1","Circ. FINMA 2023/1"],ra:["Risques juridiques et transfrontaliers"]},
+
+{id:"eq",g:"Passif",n:"Réserves et fonds propres",en:"Reserves & equity",ent:"BG",risk:"mid",
+ obj:"Vérifier les mouvements de fonds propres et leur cohérence avec les exigences réglementaires.",
+ prio:["Rapprocher les mouvements des décisions de l'AG","Contrôler les réserves pour risques bancaires généraux","Vérifier le lien avec les fonds propres réglementaires / capital minimum"],
+ pbc:["PV de l'AG","Calcul des fonds propres réglementaires","Proposition d'emploi du bénéfice"],
+ flags:[
+  {t:"Ratio de fonds propres proche du minimum",a:"P",s:3,why:"Risque de non-respect et question de continuité.",do:"Escalade, point d'audit prudentiel."},
+  {t:"Dividende supérieur au bénéfice disponible",a:"X",s:2,why:"Non-respect du CO.",do:"Vérifier les réserves disponibles."}],
+ p:[
+  {a:"X",t:"Rapprochement avec l'AG",how:["Dividendes, réserves"],trap:"Décision non exécutée.",if:"Correction."},
+  {a:"K",t:"Réserves pour risques bancaires généraux",how:["Constitution / dissolution et fiscalité"],trap:"Dissolution non présentée correctement.",if:"Correction."},
+  {a:"P",t:"Fonds propres réglementaires / capital minimum",how:["Banque : cohérence avec OFR et publication","Gestionnaire : LEFin / OEFin"],trap:"Déductions oubliées.",if:"Point prudentiel."}],
+ ics:[{c:"Calcul des fonds propres contrôlé par une fonction indépendante",test:"Inspection",def:"Pas de revue"}],
+ ref:["OFR","LEFin / OEFin","CO art. 671 ss"],ra:["Fonds propres et répartition des risques"]},
+
+{id:"com",g:"Résultat",n:"Commissions et prestations de service",en:"Commission & service fee income",ent:"BG",risk:"hi",
+ obj:"Prouver que les commissions facturées sont réelles, complètes et calculées selon les contrats. Risque de fraude présumé (ISA 240).",
+ prio:["Analytique AuM moyens × tarifs vs commissions comptabilisées","Tester la facturation sur échantillon de contrats","Contrôler les rétrocessions et leur information au client"],
+ pbc:["AuM mensuels par client / segment","Grille tarifaire et contrats","Liste des rabais et dérogations","Contrats de rétrocessions avec promoteurs"],
+ flags:[
+  {t:"Écart inexpliqué dans l'analytique AuM × tarifs",a:"X",s:3,why:"Facturation erronée ou produit fictif.",do:"Décomposer par segment, tester les écarts."},
+  {t:"Rétrocessions conservées sans renonciation du client",a:"P",s:3,why:"Obligation de restitution (LSFin / jurisprudence) : passif potentiel.",do:"Vérifier les mandats et la renonciation, évaluer une provision."},
+  {t:"Clients non facturés",a:"C",s:2,why:"Perte de revenu ou favoritisme.",do:"Comparer la liste des clients actifs aux factures."},
+  {t:"Rabais accordés sans approbation",a:"X",s:2,why:"Contournement du contrôle tarifaire.",do:"Tester la population des rabais."}],
+ p:[
+  {a:"EX",t:"Analytique substantive AuM × tarifs",how:["AuM moyens par segment","Tarif moyen","Écart vs comptabilisé < seuil"],trap:"AuM incluant des avoirs non facturables.",if:"Écart > seuil → tests de détail."},
+  {a:"X",t:"Test de facturation sur échantillon",how:["Contrat, tarif, rabais approuvé","Recalcul de la facture"],trap:"Tarif système différent du contrat.",if:"Anomalie de facturation."},
+  {a:"C",t:"Exhaustivité de la population facturée",how:["Clients actifs vs factures"],trap:"Comptes exonérés non justifiés.",if:"Produit manquant."},
+  {a:"EP",t:"Rétrocessions",how:["Contrats promoteurs","Information et renonciation du client"],trap:"Renonciation générale sans fourchettes.",if:"Évaluer passif potentiel."},
+  {a:"X",t:"ITGC sur le moteur de facturation",how:["Accès et changements des tables de tarifs"],trap:"Modification de tarif par le front.",if:"Déficience SCI, étendre les tests."}],
+ ics:[{c:"Modification des tarifs en 4 yeux",test:"Log des changements vs approbations",def:"Changement sans approbation"},{c:"Rapprochement mensuel AuM / facturation",test:"Re-performance d'un mois",def:"Écarts non investigués"}],
+ ref:["ISA-CH 240","LSFin art. 26","LEFin art. 26"],ra:["Règles de comportement LSFin"]},
+
+{id:"int",g:"Résultat",n:"Résultat des intérêts",en:"Net interest income",ent:"B",risk:"mid",
+ obj:"Vérifier que les intérêts sont correctement calculés et présentés, y compris la variation des corrections de valeur.",
+ prio:["Analytique encours moyens × taux","Recalcul sur échantillon","Contrôler la présentation des corrections de valeur"],
+ pbc:["Encours moyens et taux par catégorie","Paramétrage des taux"],
+ flags:[{t:"Taux appliqué différent du contrat",a:"X",s:2,why:"Erreur de paramétrage systémique.",do:"Étendre l'échantillon, tester le paramétrage."}],
+ p:[
+  {a:"X",t:"Analytique encours × taux",how:["Par catégorie de produit"],trap:"Taux négatifs mal traités.",if:"Tests de détail."},
+  {a:"X",t:"Recalcul sur échantillon",how:["Contrat vs système"],trap:"Base de calcul (360/365) erronée.",if:"Quantifier."},
+  {a:"K",t:"Variation des corrections de valeur",how:["Présentation brut / net"],trap:"Classement en autres charges.",if:"Reclassement."}],
+ ics:[{c:"Paramétrage des taux contrôlé",test:"Log des changements",def:"Changement non approuvé"}],
+ ref:["Circ. FINMA 2020/1"],ra:[]},
+
+{id:"opx",g:"Résultat",n:"Charges d'exploitation",en:"Operating expenses",ent:"BG",risk:"lo",
+ obj:"S'assurer que les charges sont réelles, approuvées et rattachées au bon exercice.",
+ prio:["Rapprocher la masse salariale des décomptes AVS / LPP","Tester un échantillon de factures","Contrôler le cut-off"],
+ pbc:["Décomptes AVS / LPP","Grand livre des charges"],
+ flags:[{t:"Paiement à un fournisseur créé récemment sans contrôle",a:"E",s:3,why:"Risque de fraude fournisseur.",do:"Vérifier l'existence du fournisseur et l'approbation."}],
+ p:[
+  {a:"EX",t:"Masse salariale vs AVS / LPP",how:["Rapprochement global"],trap:"Bonus versés hors paie.",if:"Investigation."},
+  {a:"E",t:"Échantillon de factures",how:["Justificatif, approbation"],trap:"Dépenses personnelles des organes.",if:"Escalade."},
+  {a:"T",t:"Cut-off",how:["Factures autour de la clôture"],trap:"Prestations de décembre facturées en février.",if:"Charge à rattacher."}],
+ ics:[{c:"Séparation création fournisseur / paiement",test:"Droits d'accès",def:"Même personne"}],
+ ref:["OEPC-FINMA"],ra:[]},
+
+{id:"off",g:"Hors bilan",n:"Opérations fiduciaires & avoirs administrés",en:"Fiduciary transactions & AuM",ent:"BG",risk:"mid",
+ obj:"Vérifier l'existence des placements fiduciaires et la fiabilité des avoirs administrés publiés.",
+ prio:["Confirmer les placements fiduciaires","Revoir la méthodologie des avoirs administrés","Rapprocher les dépôts avec les sous-dépositaires"],
+ pbc:["Liste des placements fiduciaires","Méthodologie AuM et calcul de l'argent frais net","Rapprochements sous-dépositaires"],
+ flags:[
+  {t:"Double comptage dans les avoirs administrés",a:"P",s:2,why:"Information trompeuse en annexe.",do:"Revoir la méthodologie et corriger."},
+  {t:"Écart de rapprochement avec un sous-dépositaire",a:"E",s:3,why:"Risque de perte d'avoirs clients.",do:"Escalade immédiate."}],
+ p:[
+  {a:"E",t:"Confirmation des placements fiduciaires",how:["Banques tierces"],trap:"Placement auprès d'une partie liée.",if:"Investigation."},
+  {a:"P",t:"Méthodologie des avoirs administrés",how:["Double comptage, argent frais net"],trap:"Inclusion d'avoirs en simple garde.",if:"Correction d'annexe."},
+  {a:"C",t:"Rapprochement sous-dépositaires",how:["Quantités par ISIN"],trap:"Écarts anciens tolérés.",if:"Escalade."}],
+ ics:[{c:"Rapprochement quotidien des titres",test:"Échantillon",def:"Écarts non investigués"}],
+ ref:["Circ. FINMA 2020/1","LTI"],ra:["Audit des dépôts"]},
+
+{id:"cont",g:"Hors bilan",n:"Engagements conditionnels",en:"Contingent liabilities & commitments",ent:"B",risk:"mid",
+ obj:"Identifier toutes les garanties et engagements et vérifier leur présentation et leur provisionnement.",
+ prio:["Rapprocher le registre des garanties","Lire confirmations et lettres d'avocats","Évaluer la nécessité de provisions"],
+ pbc:["Registre des garanties et accréditifs","Limites de crédit non utilisées"],
+ flags:[{t:"Garantie émise hors processus de crédit",a:"C",s:3,why:"Engagement non enregistré.",do:"Escalade, vérifier l'annexe."}],
+ p:[
+  {a:"C",t:"Registre des garanties vs comptabilité",how:["Rapprochement complet"],trap:"Garanties en devise non revalorisées.",if:"Correction."},
+  {a:"V",t:"Provision sur engagements hors bilan",how:["Probabilité d'appel"],trap:"Bénéficiaire en difficulté.",if:"Provision."},
+  {a:"P",t:"Annexe",how:["Conditionnels, irrévocables"],trap:"Limites non utilisées omises.",if:"Correction."}],
+ ics:[{c:"Émission des garanties via le processus de crédit",test:"Échantillon",def:"Garanties sans approbation"}],
+ ref:["Circ. FINMA 2020/1"],ra:[]}
+];
+
+const SCI={
+ steps:["Le SCI est documenté pour les processus significatifs (risques, contrôles clés).","Le conseil d'administration l'a approuvé et en assume la responsabilité.","Les contrôles existent réellement : walkthrough d'une transaction par processus.","Les contrôles clés couvrent les risques d'anomalies significatives sur les FSA.","Environnement de contrôle : gouvernance, séparation des fonctions, 3 lignes de défense, audit interne.","Conclusion sur l'existence du SCI dans le rapport à l'AG (CO 728a)."],
+ cycles:[
+  {n:"Crédits",fsa:"lom",c:[["M/A","Calcul quotidien des couvertures et alertes","Échantillon de jours, suivi des alertes"],["M","Approbation selon le règlement de compétences","Signataires vs limites"]]},
+  {n:"Paiements",fsa:"dep",c:[["M","Validation 4 yeux au-delà d'un seuil","Droits système + échantillon"],["A","Filtrage sanctions avant exécution","Paramètres et alertes traitées"]]},
+  {n:"Garde des titres",fsa:"off",c:[["A","Rapprochement quotidien avec sous-dépositaires","Échantillon de dates"]]},
+  {n:"Facturation",fsa:"com",c:[["M","Approbation des modifications tarifaires","Changements vs approbations"],["M","Rapprochement AuM / facturation","Re-performance d'un mois"]]},
+  {n:"Clôture",fsa:"eq",c:[["M","Revue des écritures manuelles","Tests ISA 240 sur critères de risque"]]},
+  {n:"ITGC",fsa:"com",c:[["M","Gestion des accès","Arrivées / départs, droits privilégiés"],["M","Gestion des changements","Séparation dev / prod"]]},
+  {n:"LBA / KYC",fsa:"dep",c:[["M","KYC avant ouverture","Échantillon OBA-FINMA"],["A/M","Surveillance des transactions","Alertes et clarifications"]]}]
+};
+const REF=[
+ ["Comptes statutaires",[["LB / OB art. 25 ss","Principes d'établissement des comptes des banques"],["OEPC-FINMA","Ordonnance FINMA sur l'établissement des comptes"],["Circ. FINMA 2020/1","Comptabilité – banques"],["CO art. 957 ss","Comptabilité commerciale"]]],
+ ["Normes d'audit",[["NA-CH 315 / 330","Risques et réponses (assertions)"],["NA-CH 240","Fraude, écritures manuelles"],["NA-CH 505","Confirmations externes"],["NA-CH 890","Existence du SCI"],["CO art. 728a","Contrôle ordinaire"]]],
+ ["Audit prudentiel",[["Circ. FINMA 2013/3","Activités d'audit"],["Circ. FINMA 2017/1","Gouvernance – banques"],["Circ. FINMA 2023/1","Risques opérationnels"],["OFR / OLiq","Fonds propres, liquidités"]]],
+ ["Gestionnaires & comportement",[["LEFin / OEFin","Gestionnaires de fortune"],["LSFin / OSFin","Règles de comportement, rétrocessions"],["LBA / OBA-FINMA","Blanchiment"]]]
+];
+
+/* ---------- État ---------- */
+const KEY="ckfinma.v2";
+let st={s:{},an:{},notes:{},ent:"B",cur:"lom",open:{},af:null,tab:"eng",eng:{},mandat:{name:"",year:""},ef:{ph:"all",s:"all"},confirmReset:false,pbc:{},pf:{ph:"all",s:"all"},pq:""};
+try{
+  const s=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(s) Object.assign(st,s,{af:null});
+  else{const o=JSON.parse(localStorage.getItem("ckfinma.v1")||"null"); if(o){Object.keys(o.done||{}).forEach(k=>{if(o.done[k])st.s[k]="done"});st.notes=o.notes||{};}}
+}catch(e){}
+st.confirmReset=false;
+function save(){try{localStorage.setItem(KEY,JSON.stringify({s:st.s,an:st.an,notes:st.notes,ent:st.ent,cur:st.cur,open:st.open,tab:st.tab,eng:st.eng,mandat:st.mandat,ef:st.ef,pbc:st.pbc,pf:st.pf}))}catch(e){}}
+
+const $=q=>document.querySelector(q);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const visible=()=>FSA.filter(f=>f.ent.includes(st.ent));
+const pid=(f,i)=>f.id+":"+i;
+const riskTxt={hi:"Risque élevé",mid:"Risque moyen",lo:"Risque faible"};
+const SL={todo:"À faire",done:"Fait",ano:"Anomalie",na:"N/A"};
+const tags=a=>`<span class="as">${[...a].map(k=>`<b title="${esc(A[k][0])}">${k}</b>`).join("")}</span>`;
+function counts(f){const c={todo:0,done:0,ano:0,na:0};f.p.forEach((_,i)=>c[st.s[pid(f,i)]||"todo"]++);return c}
+function allAnos(){const r=[];FSA.forEach(f=>f.p.forEach((p,i)=>{if(st.s[pid(f,i)]==="ano")r.push({f,p,i,d:st.an[pid(f,i)]||{}})}));return r}
+
+function renderList(){
+  const v=visible(); if(!v.find(f=>f.id===st.cur)) st.cur=v[0].id;
+  const groups=["Actif","Passif","Hors bilan","Résultat"];
+  $("#fsa-list").innerHTML=groups.map(g=>{const items=v.filter(f=>f.g===g); if(!items.length) return "";
+    return `<div class="grp"><h3>${g}</h3>${items.map(f=>{const c=counts(f),n=f.p.length,fin=c.done+c.na+c.ano;
+      return `<button class="fsa-btn" data-id="${f.id}" aria-current="${f.id===st.cur}"><span class="dot ${f.risk}" title="${riskTxt[f.risk]}"></span><span>${esc(f.n)}</span><span class="pct ${fin===n?"done":""}">${c.ano?`<span class="ano">⚑${c.ano}</span>`:""}${fin}/${n}</span></button>`}).join("")}</div>`}).join("");
+  $("#fsa-select").innerHTML=groups.map(g=>{const items=v.filter(f=>f.g===g); if(!items.length) return "";
+    return `<optgroup label="${g}">${items.map(f=>{const c=counts(f);return `<option value="${f.id}" ${f.id===st.cur?"selected":""}>${esc(f.n)} · ${c.done+c.na+c.ano}/${f.p.length}${c.ano?" · ⚑"+c.ano:""}</option>`}).join("")}</optgroup>`}).join("");
+  const n=allAnos().length; const b=$("#ano-badge"); b.textContent=n; b.dataset.n=n;
+}
+
+function procHTML(f,p,i){
+  const id=pid(f,i), s=st.s[id]||"todo", open=!!st.open[id], on=!st.af||p.a.includes(st.af), d=st.an[id]||{};
+  return `<article class="proc ${open?"open":""} ${on?"":"off"}" data-s="${s}" data-pid="${id}">
+   <div class="prow">
+    <button class="ptoggle" aria-expanded="${open}" data-toggle="${id}"><span class="chev">▶</span><span class="ptitle">${esc(p.t)}${tags(p.a)}</span></button>
+    <div class="status" role="group" aria-label="Statut">${Object.keys(SL).map(v=>`<button data-st="${id}" data-v="${v}" aria-pressed="${s===v}">${SL[v]}</button>`).join("")}</div>
+   </div>
+   ${open?`<div class="pdet">
+     <div><span class="lab">Comment faire</span><ol>${p.how.map(h=>`<li>${esc(h)}</li>`).join("")}</ol></div>
+     <div><div class="trap"><span class="lab">Piège fréquent</span>${esc(p.trap)}</div><div class="ifano"><span class="lab">Si tu trouves une anomalie</span>${esc(p.if)}</div></div>
+     ${s==="ano"?`<div class="anoform"><div><label for="ad-${id}">Description de l'anomalie</label><input id="ad-${id}" data-an="${id}" data-k="txt" value="${esc(d.txt)}" placeholder="Ex. couverture insuffisante client X, pas de correction de valeur"></div><div><label for="am-${id}">Montant (CHF)</label><input id="am-${id}" data-an="${id}" data-k="amt" inputmode="decimal" value="${esc(d.amt)}" placeholder="0"></div></div>`:""}
+   </div>`:""}
+  </article>`;
+}
+
+function renderPanel(){
+  const f=FSA.find(x=>x.id===st.cur), c=counts(f), n=f.p.length;
+  const chips=AK.filter(k=>f.p.some(p=>p.a.includes(k))).map(k=>{const key=f.flags.some(x=>x.a.includes(k)&&x.s===3);return `<button class="chip ${key?"key":""}" data-af="${k}" aria-pressed="${st.af===k}" title="${esc(A[k][1])}"><b>${k}</b>${A[k][0]}</button>`}).join("");
+  $("#fsa-panel").innerHTML=`
+   <div class="fsa-head"><div><h2>${esc(f.n)}</h2><div class="en">${esc(f.en)}</div></div><span class="pill ${f.risk}">${riskTxt[f.risk]}</span></div>
+   <div class="stats"><span><b>${c.done}</b> fait</span><span class="${c.ano?"danger":""}"><b>${c.ano}</b> anomalie${c.ano>1?"s":""}</span><span><b>${c.na}</b> N/A</span><span class="muted"><b>${c.todo}</b> à faire</span></div>
+   <div class="bar" aria-hidden="true"><i class="b-done" style="width:${c.done/n*100}%"></i><i class="b-ano" style="width:${c.ano/n*100}%"></i><i class="b-na" style="width:${c.na/n*100}%"></i></div>
+
+   <div class="brief">
+    <div><h3>Objectif</h3><p class="obj">${esc(f.obj)}</p><h3>Par où commencer</h3><ol class="prio">${f.prio.map(x=>`<li><span>${esc(x)}</span></li>`).join("")}</ol></div>
+    <div><h3>À demander au client (PBC)</h3><ul class="pbc">${f.pbc.map((x,i)=>`<li class="${pst("f-"+f.id+":"+i)}">${esc(x)}</li>`).join("")}</ul><button class="lnk" data-tablink="pbc" style="margin:8px 0 0">Suivre dans Documents PBC</button></div>
+   </div>
+
+   <div class="sec-title"><h3>Ce qui peut mal tourner · ${f.flags.length} signaux d'alerte</h3></div>
+   <div class="flags">${f.flags.map(x=>`<details class="flag s${x.s}"><summary><span>${esc(x.t)}</span>${tags(x.a)}</summary><div class="body"><span class="lab">Pourquoi c'est un problème</span><p>${esc(x.why)}</p><span class="lab">Que faire</span><p>${esc(x.do)}</p></div></details>`).join("")}</div>
+
+   <div class="sec-title"><h3>Procédures · clique pour le détail</h3><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="toast" id="toast"></span><button class="ghost" id="expand">Tout déplier</button><button class="ghost" id="copy">Copier le statut</button></div></div>
+   <div class="afilter" style="margin-top:8px">${chips}</div>
+   <div class="procs">${f.p.map((p,i)=>procHTML(f,p,i)).join("")}</div>
+
+   <div class="two">
+    <section class="block"><header><h3>Contrôles ICS à tester</h3></header>${f.ics.map(x=>`<div class="ctl">${esc(x.c)}<small>Test : ${esc(x.test)}</small><small class="def">Déficience typique : ${esc(x.def)}</small></div>`).join("")}</section>
+    <section class="block"><header><h3>Références</h3></header><ul class="plain">${f.ref.map(r=>`<li class="ref">${esc(r)}</li>`).join("")}${f.ra.map(r=>`<li><b>Audit prudentiel :</b> ${esc(r)}</li>`).join("")}</ul></section>
+   </div>
+   <section class="block"><header><h3>Notes de travail</h3></header><textarea id="note-${f.id}" placeholder="Seuil, échantillon retenu, références des papiers de travail, points ouverts…">${esc(st.notes[f.id])}</textarea></section>`;
+}
+
+function renderAno(){
+  const r=allAnos(); const tot=r.reduce((s,x)=>s+(parseFloat(String(x.d.amt||"").replace(/[^\d.-]/g,""))||0),0);
+  $("#view-ano").innerHTML=`<p class="lead">Toutes les procédures marquées « Anomalie », toutes FSA confondues. Complète la description et le montant dans la procédure pour préparer ton tableau des anomalies non corrigées.</p>
+   ${r.length?`<div class="tbl-wrap"><table><thead><tr><th>FSA</th><th style="text-align:left">Procédure</th><th style="text-align:left">Description</th><th style="text-align:right">Montant CHF</th></tr></thead><tbody>${r.map(x=>`<tr class="rowlink" data-id="${x.f.id}" tabindex="0"><td>${esc(x.f.n)}</td><td style="text-align:left">${esc(x.p.t)}</td><td style="text-align:left">${esc(x.d.txt)||'<span class="muted">à compléter</span>'}</td><td class="num">${x.d.amt?Number(String(x.d.amt).replace(/[^\d.-]/g,"")||0).toLocaleString("fr-CH"):"–"}</td></tr>`).join("")}<tr><td colspan="3" style="text-align:right;font-weight:600">Total</td><td class="num" style="font-weight:600">${tot.toLocaleString("fr-CH")}</td></tr></tbody></table></div>
+   <div style="margin-top:10px;display:flex;gap:8px;align-items:center"><button class="ghost" id="copy-ano">Copier le tableau</button><span class="toast" id="toast-ano"></span></div>`
+   :`<div class="block empty" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-top:16px">Aucune anomalie pour l'instant. Dans une procédure, choisis « Anomalie » pour l'ajouter ici.</div>`}`;
+}
+
+function renderMatrix(){
+  const v=visible();
+  const lvl=(f,k)=>{if(f.flags.some(x=>x.a.includes(k)&&x.s===3))return 2;if(f.p.some(p=>p.a.includes(k))||f.flags.some(x=>x.a.includes(k)))return 1;return 0};
+  $("#view-mat").innerHTML=`<p class="lead">Assertions couvertes par FSA. ● = assertion liée à un signal d'alerte critique, ○ = assertion testée. Clique une ligne pour ouvrir la checklist.</p>
+   <div class="tbl-wrap"><table><thead><tr><th>FSA</th>${AK.map(k=>`<th title="${esc(A[k][0])}">${k}</th>`).join("")}<th>Risque</th><th>Avancement</th></tr></thead><tbody>${
+    v.map(f=>{const c=counts(f);return `<tr class="rowlink" data-id="${f.id}" tabindex="0"><td>${esc(f.n)}</td>${AK.map(k=>{const l=lvl(f,k);return l===2?`<td class="k">●</td>`:l?`<td class="r">○</td>`:`<td></td>`}).join("")}<td><span class="pill ${f.risk}">${riskTxt[f.risk].replace("Risque ","")}</span></td><td class="num">${c.done+c.na+c.ano}/${f.p.length}${c.ano?` <span class="danger">⚑${c.ano}</span>`:""}</td></tr>`}).join("")}</tbody></table></div>
+   <div class="defs">${AK.map(k=>`<div class="def"><h4><span class="code">${k}</span>${A[k][0]}</h4><p>${A[k][1]}</p></div>`).join("")}</div>`;
+}
+
+function renderSCI(){
+  $("#view-sci").innerHTML=`<p class="lead">L'auditeur confirme l'existence du SCI (CO 728a, NA-CH 890). Pour les établissements FINMA, le SCI est aussi évalué dans l'audit prudentiel. Les tests d'efficacité ne sont nécessaires que si tu t'appuies sur les contrôles.</p>
+   <div class="two">
+    <section class="block"><header><h3>Existence du SCI · NA-CH 890</h3></header><ol class="steps">${SCI.steps.map(s=>`<li><span>${esc(s)}</span></li>`).join("")}</ol></section>
+    <section class="block"><header><h3>Conception · mise en place · efficacité</h3></header><ul class="plain">
+     <li><b>Conception :</b> le contrôle couvre-t-il le risque identifié ?</li>
+     <li><b>Mise en place :</b> walkthrough d'une transaction de bout en bout.</li>
+     <li><b>Efficacité :</b> échantillon selon la fréquence (annuel 1, trimestriel 2, mensuel 2–5, hebdo 5–15, quotidien 20–40, automatique 1 + ITGC). À aligner sur la méthodologie du cabinet.</li>
+     <li><b>Déficience :</b> impact, contrôles compensatoires, communication au CA (NA-CH 265).</li></ul></section>
+   </div>
+   <div class="sec-title"><h3>Contrôles clés par cycle · <span class="kind">M</span>manuel <span class="kind">A</span>automatique</h3></div>
+   <div class="cycles">${SCI.cycles.map(c=>`<section class="block"><header><h3><a href="#" data-goto="${c.fsa}" style="color:inherit">${esc(c.n)} →</a></h3></header>${c.c.map(x=>`<div class="ctl"><span class="kind">${x[0]}</span>${esc(x[1])}<small>Test : ${esc(x[2])}</small></div>`).join("")}</section>`).join("")}</div>`;
+}
+function renderRef(){
+  $("#view-ref").innerHTML=`<div class="cycles" style="margin-top:20px">${REF.map(g=>`<section class="block"><header><h3>${g[0]}</h3></header>${g[1].map(r=>`<div class="ctl"><span class="ref">${esc(r[0])}</span><small>${esc(r[1])}</small></div>`).join("")}</section>`).join("")}</div>`;
+}
+
+/* ---------- Suivi du mandat ----------
+   [titre, section Atlas, sign-off(1), lien (id FSA ou #onglet), consigne] */
+const ENG_RAW=[
+ ["Interim","Acceptation","",[
+  ["Acceptance Sign Off","",1,"","If the sign-off has not been completed at the start of the interim review, please inform your senior/manager."]]],
+ ["Interim","Planning & Risk","2.",[
+  ["Create engagement / Rollforward",""],
+  ["Prepare and deliver PBC list","",0,"#pbc"],
+  ["Upload independence confirmation and continuance in Atlas",""],
+  ["Prepare third-party confirmation",""],
+  ["Prepare client Kick-Off","2.10.10"],
+  ["Team Kick-off","2.10.20"],
+  ["The entity and its environment","2.20.10"],
+  ["Reporting Framework","2.20.20"],
+  ["IT UTE","2.20.40"],
+  ["Laws and Regulations","2.20.70"],
+  ["Related parties","2.20.90"],
+  ["Internal controls & entity's risk assessment","2.30",0,"#sci"],
+  ["Financial Statement level risks","2.40"],
+  ["Fraud template / questionnaire","2.50"],
+  ["Preliminary analytical","2.60.10"],
+  ["Calculate materiality","2.60.20"],
+  ["Upload TB and Mapping",""],
+  ["COTABS and corresponding assertions","2.70.10/30",0,"#mat"],
+  ["KBP","2.70.50",0,"","The existence of ICS is confirmed in section 3.10.35. Here, the memos from the previous year can be updated and stored."],
+  ["ICS PS890","3.10.35",0,"#sci"],
+  ["Identify WCGWs and controls","2.70.60/80",0,"#sci"],
+  ["IT Risk Assessment","2.80"],
+  ["Follow-up previous year / ISA-CH 510",""],
+  ["Planning Sign Off","",1,"","If the sign-off has not been completed at the start of the final review, please inform your senior/manager."]]],
+ ["Final","Audit Response","",[
+  ["AGM, BOD and management minutes","3.05"],
+  ["FSLR – Going Concern","3.50.10"],
+  ["Management Override","3.50.11"]]],
+ ["Final","General Audit Procedures","30.60",[
+  ["General Audit Procedures","30.60.10",0,"","Depending on the planning: FS Check, JET, Legal Claims & Litigation; Search for unrecorded."],
+  ["Related parties","3.60.11"],
+  ["Service Organisation","3.60.12"],
+  ["Drittbestätigungen","3.60.13"]]],
+ ["Final","COTAB","3.70",[
+  ["Cash and cash equivalents","",0,"liq"],
+  ["Trade receivables",""],
+  ["Accrued income and prepaid expenses","",0,"reg"],
+  ["Tangible fixed assets",""],
+  ["Intangible fixed assets",""],
+  ["Trade creditors",""],
+  ["Deferred income and accrued expenses","",0,"reg"],
+  ["Basic, shareholder or foundation capital","",0,"eq"],
+  ["Statutory retained earnings","",0,"eq"],
+  ["Profit/Loss carried forward","",0,"eq"],
+  ["Net proceeds from goods and services","",0,"com"],
+  ["Cost of materials",""],
+  ["Staff costs","",0,"opx"],
+  ["Other operational costs","",0,"opx"],
+  ["Depreciation and valuation adjustments on fixed assets",""],
+  ["Financial costs and financial income","",0,"int"],
+  ["Direct taxes",""]]],
+ ["Final","Sujets spécifiques","300",[
+  ["Capital Loss","",0,"eq"],
+  ["Prohibited capital repayment","",0,"eq"],
+  ["FinMIA","",0,"trd"]]],
+ ["Completion","Completion","",[
+  ["Completion MEMO","4.10"],
+  ["Revised Materiality","4.20"],
+  ["Final analytical",""],
+  ["Going Concern",""],
+  ["Proposal of profit allocation","",0,"eq"],
+  ["FS Checkliste",""],
+  ["Subsequent Events",""],
+  ["Completion overall Checkliste",""],
+  ["Audit Findings","4.30",0,"#ano"],
+  ["Communication","4.40"],
+  ["REP Bericht draft (statutarisch und umfassend)",""],
+  ["EHP und Summary report draft",""],
+  ["EHP Risk assessment & audit strategy",""],
+  ["VSTE erstellen",""],
+  ["Copy doc in PBC & delete sharedmazars",""]]]
+];
+const ENG=[];ENG_RAW.forEach(([ph,area,sec,items])=>items.forEach(it=>ENG.push({id:"e"+ENG.length,ph,area,sec,t:it[0],atl:it[1]||"",so:!!it[2],lk:it[3]||"",hint:it[4]||""})));
+const PH=["Interim","Final","Completion"];
+const ES={open:"Ouvert",wip:"En cours",rev:"En revue",done:"Clôturé"};
+const eget=id=>st.eng[id]||{};
+const est=id=>eget(id).s||"open";
+function eset(id,k,v){st.eng[id]=Object.assign({},st.eng[id],{[k]:v});save()}
+
+function linkHTML(e){
+  if(!e.lk) return "";
+  if(e.lk==="#ano"){const n=allAnos().length;return `<button class="lnk" data-tablink="ano">Anomalies${n?` <span class="danger">⚑${n}</span>`:""}</button>`}
+  if(e.lk==="#pbc"){const a=pbcAll(),r=a.filter(x=>pst(x.id)==="rec").length;return `<button class="lnk" data-tablink="pbc">Liste PBC · ${r}/${a.filter(x=>pst(x.id)!=="na").length} reçus</button>`}
+  if(e.lk==="#sci") return `<button class="lnk" data-tablink="sci">Voir ICS</button>`;
+  if(e.lk==="#mat") return `<button class="lnk" data-tablink="mat">Voir matrice</button>`;
+  const f=FSA.find(x=>x.id===e.lk); const c=counts(f);
+  return `<button class="lnk" data-goto="${f.id}">Checklist ${c.done+c.na+c.ano}/${f.p.length}${c.ano?` <span class="danger">⚑${c.ano}</span>`:""}</button>`;
+}
+
+function renderEng(){
+  const ef=st.ef;
+  const phaseCard=ph=>{const it=ENG.filter(e=>e.ph===ph),n=it.length,c={open:0,wip:0,rev:0,done:0};it.forEach(e=>c[est(e.id)]++);
+    return `<button class="phase" data-eph="${ph}" aria-pressed="${ef.ph===ph}"><div class="row"><h3>${ph}</h3><span class="big">${c.done}/${n}</span></div>
+     <div class="bar"><i class="b-done" style="width:${c.done/n*100}%"></i><i class="b-rev" style="width:${c.rev/n*100}%"></i><i class="b-wip" style="width:${c.wip/n*100}%"></i></div>
+     <div class="sm">${c.wip} en cours · ${c.rev} en revue · ${c.open} ouvert${c.open>1?"s":""}</div></button>`};
+  const nextSo=ENG.find(e=>e.so&&est(e.id)!=="done");
+  let ms="";
+  if(nextSo){const idx=ENG.indexOf(nextSo);const before=ENG.slice(0,idx).filter(e=>e.ph===nextSo.ph&&est(e.id)!=="done").length;
+    ms=`<div class="milestone"><span>Prochain jalon : <b>${esc(nextSo.t)}</b></span><span class="muted">${before} étape${before>1?"s":""} encore ouverte${before>1?"s":""} avant ce sign-off</span></div>`}
+  else ms=`<div class="milestone"><span>Tous les sign-offs sont clôturés.</span></div>`;
+  const rows=ENG.filter(e=>(ef.ph==="all"||e.ph===ef.ph)&&(ef.s==="all"||est(e.id)===ef.s));
+  let html="",last="";
+  rows.forEach(e=>{const g=e.ph+" · "+e.area+(e.sec?" ("+e.sec+")":"");
+    if(g!==last){html+=`<tr class="grp"><td colspan="7">${esc(g)}</td></tr>`;last=g}
+    const d=eget(e.id),s=est(e.id);
+    html+=`<tr data-s="${s}" class="${e.so?"so":""}">
+     <td class="atl">${esc(e.atl)}</td>
+     <td><span class="etitle">${esc(e.t)}</span>${e.so?`<span class="mspill">Sign-off</span>`:""}${linkHTML(e)}</td>
+     <td><select class="est" id="es-${e.id}" data-es="${e.id}" data-s="${s}" aria-label="Statut">${Object.keys(ES).map(k=>`<option value="${k}" ${k===s?"selected":""}>${ES[k]}</option>`).join("")}</select></td>
+     ${["j","se","m"].map(k=>`<td class="who"><input class="ini" id="ei-${e.id}-${k}" data-ei="${e.id}" data-k="${k}" maxlength="4" value="${esc(d[k]??(k==="m"&&e.so?"X":""))}" aria-label="${{j:"Junior",se:"Senior",m:"Manager"}[k]}"></td>`).join("")}
+     <td class="cmt">${e.hint?`<small class="hint">${esc(e.hint)}</small>`:""}<input class="cin" id="ec-${e.id}" data-ei="${e.id}" data-k="c" value="${esc(d.c)}" placeholder="Commentaire…" aria-label="Commentaire"></td>
+    </tr>`});
+  const tot=ENG.length,done=ENG.filter(e=>est(e.id)==="done").length;
+  $("#view-eng").innerHTML=`
+   <div class="eng-top">
+    <div class="field name"><label for="m-name">Mandat</label><input id="m-name" value="${esc(st.mandat.name)}" placeholder="Nom de l'entité"></div>
+    <div class="field year"><label for="m-year">Exercice</label><input id="m-year" value="${esc(st.mandat.year)}" placeholder="2026" inputmode="numeric"></div>
+    <div class="eng-actions"><span class="muted" style="font-size:.85rem"><b class="mono">${done}/${tot}</b> étapes clôturées</span><span class="toast" id="toast-eng"></span><button class="ghost" id="copy-eng">Copier pour Excel</button>
+     ${st.confirmReset?`<button class="ghost danger" id="reset-yes">Confirmer : tout remettre à « Ouvert »</button><button class="ghost" id="reset-no">Annuler</button>`:`<button class="ghost" id="reset-eng">Nouveau mandat</button>`}</div>
+   </div>
+   <div class="phases">${PH.map(phaseCard).join("")}</div>
+   ${ms}
+   <div class="efilter"><span class="muted" style="font-size:.78rem;margin-right:4px">Afficher :</span>
+    <button class="chip" data-efs="all" aria-pressed="${ef.s==="all"}">Tout</button>${Object.keys(ES).map(k=>`<button class="chip" data-efs="${k}" aria-pressed="${ef.s===k}">${ES[k]}</button>`).join("")}
+    ${ef.ph!=="all"?`<button class="chip" data-eph="all" aria-pressed="false">Toutes les phases ✕</button>`:""}</div>
+   <div class="tbl-wrap"><table class="eng"><thead><tr><th>Atlas</th><th>Étape</th><th>Statut</th><th class="who">Junior</th><th class="who">Senior</th><th class="who">Manager</th><th>Commentaire</th></tr></thead><tbody>${html||`<tr><td colspan="7" class="empty">Aucune étape avec ce filtre.</td></tr>`}</tbody></table></div>`;
+}
+
+/* ---------- Documents PBC ----------
+   Groupes : [id, phase, titre, étape du suivi / Atlas, [[document, précision]]]
+   Les groupes FSA sont générés depuis FSA[].pbc et insérés à « @FSA » */
+const PBC_RAW=[
+ ["acc","Interim","Acceptation & continuation","Acceptance Sign Off",[
+  ["Extrait du registre du commerce à jour"],
+  ["Statuts et règlement d'organisation en vigueur"],
+  ["Organigramme et liste des organes (CA, direction, comités)","Avec dates d'entrée / sortie pendant l'exercice"],
+  ["Structure du groupe et liste des participations"],
+  ["Licence / autorisation FINMA et éventuelles conditions","Banque : LB ; gestionnaire : LEFin"]]],
+ ["kick","Interim","Kick-off client & connaissance de l'entité","Atlas 2.10 / 2.20.10",[
+  ["Business plan, budget de l'exercice et stratégie approuvés par le CA"],
+  ["Reporting de gestion (MIS) et rapports de risques au CA","Les 4 derniers trimestres"],
+  ["Liste des changements significatifs","Nouveaux produits, systèmes, collaborateurs clés, réorganisations"],
+  ["Correspondance avec la FINMA de l'exercice","Décisions, demandes, enquêtes"],
+  ["Rapport d'audit prudentiel de l'année précédente et prises de position"],
+  ["Calendrier de clôture et contacts par domaine"]]],
+ ["frame","Interim","Référentiel comptable & balance","Atlas 2.20.20 / TB & Mapping",[
+  ["Comptes annuels N-1 signés (bilan, résultat, annexe)"],
+  ["Manuel / politiques comptables","Évaluation, corrections de valeur, comptabilisation des commissions"],
+  ["Plan comptable et mapping vers le schéma FINMA / CO"],
+  ["Balance intermédiaire (TB) et comparatif N-1","Pour l'analytique préliminaire (Atlas 2.60.10)"],
+  ["Reporting mensuel budget vs réel"]]],
+ ["it","Interim","Informatique (IT UTE & risk assessment)","Atlas 2.20.40 / 2.80",[
+  ["Liste des applications pertinentes et schéma de l'architecture IT","Core banking, PMS, facturation, comptabilité"],
+  ["Contrats d'externalisation (outsourcing) et inventaire FINMA"],
+  ["Rapports ISAE 3402 / SOC 1 type II des prestataires + bridge letters"],
+  ["Politique de gestion des accès et liste des utilisateurs privilégiés"],
+  ["Liste des changements majeurs (migrations, mises à jour) de l'exercice"],
+  ["Liste des incidents IT / cyber de l'exercice"]]],
+ ["law","Interim","Lois & réglementation, LBA","Atlas 2.20.70",[
+  ["Rapport annuel de la compliance au CA"],
+  ["Rapport du responsable LBA et analyse de risques LBA","OBA-FINMA"],
+  ["Liste des communications au MROS (nombre, statut)","Sans données nominatives si possible"],
+  ["Registre des plaintes clients"],
+  ["Liste des violations réglementaires ou incidents de conformité"]]],
+ ["rp","Interim","Parties liées","Atlas 2.20.90 / 3.60.11",[
+  ["Liste des parties liées","Organes, actionnaires qualifiés, sociétés du groupe, proches"],
+  ["Liste des crédits et engagements envers les organes et parties liées","Avec conditions appliquées"],
+  ["Contrats intragroupe et documentation des prix de transfert"]]],
+ ["ics","Interim","Contrôle interne (ICS / PS 890)","Atlas 2.30 / 3.10.35 / 2.70.60",[
+  ["Documentation SCI à jour (descriptions de processus, matrices risques-contrôles)"],
+  ["PV du CA approuvant le SCI"],
+  ["Rapports de l'audit interne de l'exercice et suivi des recommandations"],
+  ["Rapports des contrôles de 2e ligne (risk management, compliance)"],
+  ["Preuves d'exécution des contrôles clés pour l'échantillon","Liste précise envoyée après sélection"]]],
+ ["fraud","Interim","Fraude & risques au niveau des états financiers","Atlas 2.40 / 2.50",[
+  ["Questionnaire fraude complété par la direction et le président du CA / comité d'audit"],
+  ["Registre des incidents et pertes opérationnelles"],
+  ["Politique de whistleblowing et signalements reçus"]]],
+ ["conf","Interim","Confirmations de tiers","Prepare third-party confirmation / 3.60.13",[
+  ["Liste de toutes les banques et dépositaires avec adresses et contacts","Y compris comptes fermés pendant l'exercice"],
+  ["Liste des avocats et conseillers juridiques actifs"],
+  ["Liste des contreparties de dérivés et des promoteurs de fonds (rétrocessions)"],
+  ["Autorisations signées pour l'envoi des confirmations"]]],
+ ["py","Interim","Suivi de l'exercice précédent","ISA-CH 510",[
+  ["Prise de position de la direction sur les recommandations N-1 (management letter)"],
+  ["Statut de mise en œuvre des mesures FINMA"]]],
+ ["gen","Final","Procédures générales","Atlas 3.05 / 3.50 / 30.60",[
+  ["PV du CA, des comités (audit, risques, crédit), de la direction et de l'AG","De l'exercice jusqu'à la date du rapport"],
+  ["Extraction complète du journal des écritures (JET)","Avec utilisateur, date de saisie, date comptable, écritures manuelles"],
+  ["Liste des utilisateurs autorisés à passer des écritures manuelles"],
+  ["Registre des litiges et réclamations","Pour les lettres d'avocats"],
+  ["Factures reçues et paiements effectués après la clôture","Recherche de passifs non enregistrés"],
+  ["Budget / prévisions N+1, plan de capital et de liquidité","Going concern (3.50.10)"]]],
+ ["svc","Final","Organisations de services","Atlas 3.60.12",[
+  ["Rapports ISAE 3402 type II couvrant l'exercice","Dépositaire, administrateur, prestataire IT"],
+  ["Bridge letters pour la période non couverte"],
+  ["Contrôles complémentaires de l'entité (CUEC) documentés"]]],
+ "@FSA",
+ ["co","Final","Autres rubriques (schéma CO)","COTAB 3.70",[
+  ["Créances : balance âgée des débiteurs au 31.12 et encaissements post-clôture"],
+  ["Immobilisations corporelles et incorporelles : tableau des mouvements, factures d'acquisition, plan d'amortissement"],
+  ["Créanciers : balance fournisseurs et relevés des principaux fournisseurs"],
+  ["Impôts directs : décompte fiscal, dernière taxation, calcul de la provision d'impôt"],
+  ["Capital : extrait RC, PV d'AG, preuves de libération ou de remboursement","Capital loss / prohibited capital repayment"],
+  ["LIMF : liste des dérivés et preuves de déclaration au référentiel central","FinMIA"]]],
+ ["comp","Completion","Clôture de l'audit","Atlas 4.10 – 4.40",[
+  ["Comptes annuels définitifs avec annexe et rapport de gestion"],
+  ["Proposition d'emploi du bénéfice approuvée par le CA"],
+  ["Lettre d'affirmation (representation letter) signée","Datée du jour du rapport"],
+  ["Informations sur les événements postérieurs à la clôture","PV, litiges, pertes significatives"],
+  ["Prise de position de la direction sur les constatations (Audit Findings 4.30)"],
+  ["Reporting réglementaire final","Fonds propres, liquidité, répartition des risques"]]],
+ ["ehp","Completion","Audit prudentiel (REP / EHP)","REP Bericht / EHP",[
+  ["Données pour l'analyse de risques prudentielle","Questionnaire / formulaire FINMA de l'exercice"],
+  ["Rapport annuel de gestion des risques"],
+  ["Inventaire des externalisations essentielles et contrats"],
+  ["Calcul et publication des fonds propres (Pilier 3) pour les banques"],
+  ["Liste des mandats et contrats de gestion (gestionnaires de fortune)","LEFin / LSFin"]]]
+];
+const PS={todo:"À demander",req:"Demandé",rec:"Reçu",na:"N/A"};
+const pst=id=>st.pbc[id]||"todo";
+function pbcGroups(){
+  const out=[];
+  PBC_RAW.forEach(g=>{
+    if(g==="@FSA"){visible().forEach(f=>out.push({id:"f-"+f.id,ph:"Final",t:f.n,step:"COTAB · "+f.en,fsa:f.id,items:f.pbc.map(x=>[x])}));return}
+    out.push({id:g[0],ph:g[1],t:g[2],step:g[3],items:g[4]});
+  });
+  return out.map(g=>Object.assign(g,{docs:g.items.map((x,i)=>({id:g.id+":"+i,t:x[0],h:x[1]||""}))}));
+}
+function pbcAll(){return pbcGroups().flatMap(g=>g.docs)}
+
+function renderPbc(){
+  $("#view-pbc").innerHTML=`
+   <p class="lead">Les documents à demander au client, étape par étape. Suis chaque demande (à demander, demandé, reçu) et copie la liste des documents manquants pour ton e-mail au client.</p>
+   <div class="phases" id="pbc-cards"></div>
+   <div class="efilter">
+    <input id="pbc-q" type="search" placeholder="Rechercher un document…" value="${esc(st.pq)}" style="flex:1 1 220px;max-width:340px;padding:6px 10px;border:1px solid var(--line);border-radius:4px;background:var(--surface)">
+    <span id="pbc-chips" style="display:flex;flex-wrap:wrap;gap:6px"></span>
+    <span class="eng-actions"><span class="toast" id="toast-pbc"></span><button class="ghost" id="copy-pbc-mail">Copier la demande client</button><button class="ghost" id="copy-pbc-xls">Copier pour Excel</button></span>
+   </div>
+   <div id="pbc-groups"></div>`;
+  renderPbcBody();
+}
+function renderPbcBody(){
+  const G=pbcGroups(),pf=st.pf,q=st.pq.trim().toLowerCase();
+  $("#pbc-cards").innerHTML=PH.map(ph=>{const d=G.filter(g=>g.ph===ph).flatMap(g=>g.docs).filter(x=>pst(x.id)!=="na"),c={todo:0,req:0,rec:0};d.forEach(x=>c[pst(x.id)]++);const n=d.length||1;
+    return `<button class="phase" data-pph="${ph}" aria-pressed="${pf.ph===ph}"><div class="row"><h3>${ph}</h3><span class="big">${c.rec}/${d.length}</span></div>
+     <div class="bar"><i class="b-done" style="width:${c.rec/n*100}%"></i><i class="b-wip" style="width:${c.req/n*100}%"></i></div>
+     <div class="sm">${c.rec} reçu${c.rec>1?"s":""} · ${c.req} demandé${c.req>1?"s":""} · ${c.todo} à demander</div></button>`}).join("");
+  $("#pbc-chips").innerHTML=`<button class="chip" data-pfs="all" aria-pressed="${pf.s==="all"}">Tout</button><button class="chip" data-pfs="missing" aria-pressed="${pf.s==="missing"}">Pas encore reçu</button>${Object.keys(PS).map(k=>`<button class="chip" data-pfs="${k}" aria-pressed="${pf.s===k}">${PS[k]}</button>`).join("")}${pf.ph!=="all"?`<button class="chip" data-pph="all" aria-pressed="false">Toutes les phases ✕</button>`:""}`;
+  const okS=s=>pf.s==="all"||(pf.s==="missing"?(s==="todo"||s==="req"):s===pf.s);
+  const html=G.filter(g=>pf.ph==="all"||g.ph===pf.ph).map(g=>{
+    const docs=g.docs.filter(x=>okS(pst(x.id))&&(!q||(x.t+" "+x.h+" "+g.t).toLowerCase().includes(q)));
+    if(!docs.length) return "";
+    const act=g.docs.filter(x=>pst(x.id)!=="na"),rec=act.filter(x=>pst(x.id)==="rec").length;
+    const link=g.fsa?`<button class="lnk" data-goto="${g.fsa}">Checklist FSA</button>`:"";
+    return `<section class="block pgrp"><header><div style="min-width:0"><h4>${esc(g.t)}${link}</h4><span class="en">${esc(g.ph)} · ${esc(g.step)}</span></div><span class="cnt ${rec===act.length&&act.length?"ok":""}">${rec}/${act.length} reçus</span></header>
+     ${docs.map(x=>{const s=pst(x.id);return `<div class="pdoc" data-s="${s}"><div class="ptxt">${esc(x.t)}${x.h?`<small>${esc(x.h)}</small>`:""}</div>
+      <div class="pstatus" role="group" aria-label="Statut du document">${Object.keys(PS).map(k=>`<button data-pst="${x.id}" data-v="${k}" aria-pressed="${s===k}">${PS[k]}</button>`).join("")}</div></div>`}).join("")}</section>`}).join("");
+  $("#pbc-groups").innerHTML=html||`<div class="empty block" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-top:12px">Aucun document ne correspond à ce filtre.</div>`;
+}
+
+function tab(t){st.tab=t;save();document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  ["eng","pbc","fsa","ano","mat","sci","ref"].forEach(x=>$("#view-"+x).hidden=x!==t);
+  if(t==="eng")renderEng(); if(t==="pbc")renderPbc(); if(t==="ano")renderAno(); if(t==="mat")renderMatrix();}
+function renderAll(){document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ent===st.ent));renderList();renderPanel();}
+function openFsa(id){st.cur=id;st.af=null;save();renderList();renderPanel();tab("fsa");window.scrollTo({top:0})}
+function copy(txt,el){const ok=()=>{const t=$(el);if(t)t.textContent="Copié"};
+  try{navigator.clipboard.writeText(txt).then(ok).catch(()=>{const t=$(el);if(t)t.textContent="Copie refusée par le navigateur"})}catch(e){}}
+
+document.addEventListener("click",e=>{
+  const T=e.target;
+  const tl=T.closest("[data-tablink]"); if(tl){tab(tl.dataset.tablink);window.scrollTo({top:0});return}
+  const ph=T.closest("[data-eph]"); if(ph){st.ef.ph=st.ef.ph===ph.dataset.eph?"all":ph.dataset.eph;save();renderEng();return}
+  const fs=T.closest("[data-efs]"); if(fs){st.ef.s=fs.dataset.efs;save();renderEng();return}
+  const pb=T.closest("[data-pst]"); if(pb){const id=pb.dataset.pst,v=pb.dataset.v;if(v==="todo")delete st.pbc[id];else st.pbc[id]=v;save();renderPbcBody();const n=document.querySelector(`[data-pst="${id}"][data-v="${v}"]`);if(n)n.focus();return}
+  const pp=T.closest("[data-pph]"); if(pp){st.pf.ph=st.pf.ph===pp.dataset.pph?"all":pp.dataset.pph;save();renderPbcBody();return}
+  const pfs=T.closest("[data-pfs]"); if(pfs){st.pf.s=pfs.dataset.pfs;save();renderPbcBody();return}
+  if(T.id==="copy-pbc-mail"){const G=pbcGroups();let out=`Documents à fournir${st.mandat.name?" – "+st.mandat.name:""}${st.mandat.year?" – exercice "+st.mandat.year:""}\n`;
+    PH.forEach(ph=>{const gs=G.filter(g=>g.ph===ph).map(g=>({g,d:g.docs.filter(x=>["todo","req"].includes(pst(x.id)))})).filter(x=>x.d.length);
+      if(!gs.length)return; out+=`\n${ph.toUpperCase()}\n`; gs.forEach(({g,d})=>{out+=`\n${g.t}\n`+d.map(x=>`- ${x.t}${x.h?" ("+x.h+")":""}`).join("\n")+"\n"})});
+    copy(out,"#toast-pbc");return}
+  if(T.id==="copy-pbc-xls"){copy(["Phase\tÉtape\tGroupe\tDocument\tPrécision\tStatut",...pbcGroups().flatMap(g=>g.docs.map(x=>[g.ph,g.step,g.t,x.t,x.h,PS[pst(x.id)]].join("\t")))].join("\n"),"#toast-pbc");return}
+  if(T.id==="reset-eng"){st.confirmReset=true;renderEng();return}
+  if(T.id==="reset-no"){st.confirmReset=false;renderEng();return}
+  if(T.id==="reset-yes"){st.eng={};st.pbc={};st.mandat={name:"",year:""};st.confirmReset=false;save();renderEng();return}
+  if(T.id==="copy-eng"){copy([`Mandat\t${st.mandat.name}\t${st.mandat.year}`,"Phase\tZone\tAtlas\tÉtape\tStatut\tJunior\tSenior\tManager\tCommentaire",
+    ...ENG.map(x=>{const d=eget(x.id);return [x.ph,x.area+(x.sec?" "+x.sec:""),x.atl,x.t,ES[est(x.id)],d.j||"",d.se||"",d.m??(x.so?"X":""),(d.c||"").replace(/\t|\n/g," ")].join("\t")})].join("\n"),"#toast-eng");return}
+  const b=T.closest(".fsa-btn"); if(b){openFsa(b.dataset.id);return}
+  const en=T.closest(".seg button"); if(en){st.ent=en.dataset.ent;st.af=null;save();renderAll();return}
+  const t=T.closest("nav.tabs button"); if(t){tab(t.dataset.tab);return}
+  const sb=T.closest("[data-st]"); if(sb){const id=sb.dataset.st,v=sb.dataset.v;
+    if(v==="todo")delete st.s[id];else st.s[id]=v; if(v==="ano")st.open[id]=true; save();renderList();renderPanel();
+    const nb=document.querySelector(`[data-st="${id}"][data-v="${v}"]`); if(nb)nb.focus(); if(v==="ano"){const i=document.getElementById("ad-"+id); if(i)i.focus()} return}
+  const tg=T.closest("[data-toggle]"); if(tg){const id=tg.dataset.toggle;st.open[id]=!st.open[id];save();renderPanel();const n=document.querySelector(`[data-toggle="${id}"]`);if(n)n.focus();return}
+  const c=T.closest(".chip"); if(c){st.af=st.af===c.dataset.af?null:c.dataset.af;renderPanel();return}
+  const r=T.closest("tr.rowlink"); if(r){openFsa(r.dataset.id);return}
+  const g=T.closest("[data-goto]"); if(g){e.preventDefault();const f=FSA.find(x=>x.id===g.dataset.goto); if(!f.ent.includes(st.ent)){st.ent="B";renderAll()} openFsa(f.id);return}
+  if(T.id==="expand"){const f=FSA.find(x=>x.id===st.cur);const all=f.p.every((_,i)=>st.open[pid(f,i)]);f.p.forEach((_,i)=>st.open[pid(f,i)]=!all);save();renderPanel();return}
+  if(T.id==="copy"){const f=FSA.find(x=>x.id===st.cur);
+    copy(`${f.n} (${f.en})\n`+f.p.map((p,i)=>{const s=st.s[pid(f,i)]||"todo",d=st.an[pid(f,i)];return `[${SL[s]}] ${p.t} — ${[...p.a].join("/")}${s==="ano"&&d?` → ${d.txt||""} ${d.amt?"CHF "+d.amt:""}`:""}`}).join("\n")+(st.notes[f.id]?`\n\nNotes : ${st.notes[f.id]}`:""),"#toast");return}
+  if(T.id==="copy-ano"){copy(["FSA\tProcédure\tDescription\tMontant CHF",...allAnos().map(x=>`${x.f.n}\t${x.p.t}\t${x.d.txt||""}\t${x.d.amt||""}`)].join("\n"),"#toast-ano");return}
+});
+document.addEventListener("change",e=>{if(e.target.id==="fsa-select")openFsa(e.target.value);
+  if(e.target.dataset.es){const id=e.target.dataset.es;eset(id,"s",e.target.value);renderEng();const n=document.getElementById("es-"+id);if(n)n.focus()}});
+document.addEventListener("input",e=>{const T=e.target;
+  if(T.dataset.ei){eset(T.dataset.ei,T.dataset.k,T.value);return}
+  if(T.id==="pbc-q"){st.pq=T.value;renderPbcBody();return}
+  if(T.id==="m-name"||T.id==="m-year"){st.mandat[T.id==="m-name"?"name":"year"]=T.value;save();return}
+  if(T.id&&T.id.startsWith("note-")){st.notes[T.id.slice(5)]=T.value;save()}
+  if(T.dataset.an){const id=T.dataset.an;st.an[id]=Object.assign({},st.an[id],{[T.dataset.k]:T.value});save()}
+});
+document.addEventListener("keydown",e=>{const r=e.target.closest&&e.target.closest("tr.rowlink"); if(r&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openFsa(r.dataset.id)}});
+
+/* première ouverture : déplier la 1re procédure pour montrer le détail */
+if(!Object.keys(st.open).length) st.open["lom:1"]=true;
+renderAll();renderSCI();renderRef();tab(st.tab||"eng");
+</script>
+
+</html>
